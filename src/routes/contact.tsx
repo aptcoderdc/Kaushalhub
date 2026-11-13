@@ -93,10 +93,10 @@ function Contact() {
               Email Us
             </h2>
             <a
-              href="mailto:hello@aptcoder.in"
+              href="mailto:hello@aptcoder.com"
               className="mt-3 inline-flex min-h-11 items-center font-medium text-navy underline-offset-4 hover:underline focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2"
             >
-              hello@aptcoder.in
+              hello@aptcoder.com
             </a>
           </section>
         </div>
