@@ -32,16 +32,23 @@
   --color-ring: var(--ring);
   --color-navy: var(--navy);
   --color-saffron: var(--saffron);
+  --color-saffron-ink: var(--saffron-ink);
   --color-ink: var(--ink);
   --color-brand-deep: var(--brand-deep);
   --color-slate: var(--slate);
   --color-tint: var(--tint);
   --shadow-soft: 0 1px 2px oklch(0.2 0.05 260 / 4%), 0 4px 16px oklch(0.2 0.05 260 / 5%);
+  --shadow-card: var(--kh-shadow-card);
+  --shadow-lift: var(--kh-shadow-lift);
+  --shadow-float: var(--kh-shadow-float);
+  --ease-brand: var(--kh-ease);
 }
 
 :root {
   --navy: oklch(0.27 0.07 257);        /* #0F2747 */
   --saffron: oklch(0.72 0.15 62);      /* #E8912D */
+  /* Darker saffron for small accent text on light backgrounds (AA contrast). */
+  --saffron-ink: oklch(0.52 0.12 55);
   --ink: oklch(0.18 0.03 262);         /* #0B1220 */
   /* Sampled from the background of kaushalhub-logo-reversed.png; keep in sync with that file. */
   --brand-deep: #1e2a78;
@@ -66,11 +73,20 @@
   --border: oklch(0.9 0.01 85);        /* #E2DED6 */
   --input: oklch(0.9 0.01 85);
   --ring: var(--navy);
+
+  /* Layered elevation: a tight contact shadow plus a wide, navy-tinted ambient one. */
+  --kh-shadow-card: 0 1px 2px oklch(0.27 0.07 257 / 5%), 0 8px 24px -12px oklch(0.27 0.07 257 / 12%);
+  --kh-shadow-lift: 0 2px 4px oklch(0.27 0.07 257 / 6%), 0 24px 48px -20px oklch(0.27 0.07 257 / 28%);
+  --kh-shadow-float: 0 2px 6px oklch(0.27 0.07 257 / 8%), 0 40px 80px -32px oklch(0.27 0.07 257 / 42%);
+  --kh-shadow-cta: inset 0 1px 0 oklch(1 0 0 / 35%), 0 8px 20px -8px oklch(0.72 0.15 62 / 65%);
+  --kh-shadow-cta-hover: inset 0 1px 0 oklch(1 0 0 / 35%), 0 14px 28px -10px oklch(0.72 0.15 62 / 75%);
+  --kh-ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @layer base {
   * { border-color: var(--color-border); }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; scroll-padding-top: 6rem; }
+  ::selection { background-color: oklch(0.72 0.15 62 / 28%); color: var(--color-ink); }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
@@ -154,4 +170,236 @@
     right: 17px;
     bottom: calc(88px + env(safe-area-inset-bottom, 0px));
   }
+}
+
+/* ======================================================================
+   Motion and surface system
+   Every effect here is decorative: content is fully visible without JS,
+   and prefers-reduced-motion switches all movement off (see bottom).
+   ====================================================================== */
+
+/* Pause the partner marquee while a visitor is reading a logo. */
+.institutional-logo-marquee:hover .institutional-logo-track { animation-play-state: paused; }
+
+/* ---- Entrance: staggered rise used by page heroes ---- */
+@keyframes kh-rise {
+  from { opacity: 0; transform: translate3d(0, 18px, 0); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes kh-rise-scale {
+  from { opacity: 0; transform: translate3d(0, 24px, 0) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+.kh-rise { animation: kh-rise 0.8s var(--kh-ease) both; animation-delay: var(--kh-delay, 0ms); }
+.kh-rise-card { animation: kh-rise-scale 1s var(--kh-ease) both; animation-delay: var(--kh-delay, 0ms); }
+
+/* The first section of every page eases in, children staggered. */
+.kh-page > section:first-child > .container-site > * { animation: kh-rise 0.75s var(--kh-ease) both; }
+.kh-page > section:first-child > .container-site > :nth-child(2) { animation-delay: 90ms; }
+.kh-page > section:first-child > .container-site > :nth-child(3) { animation-delay: 180ms; }
+.kh-page > section:first-child > .container-site > :nth-child(n + 4) { animation-delay: 240ms; }
+.kh-page > section[data-hero] > .container-site > * { animation: none; }
+
+/* Scroll reveal is driven by the Web Animations API in src/hooks/use-scroll-reveal.ts. */
+
+/* ---- Accordion panel ---- */
+@keyframes kh-panel-in {
+  from { opacity: 0; transform: translate3d(0, -6px, 0); }
+  to { opacity: 1; transform: none; }
+}
+.kh-panel { animation: kh-panel-in 0.4s var(--kh-ease) both; }
+
+/* ---- Mobile menu ---- */
+@keyframes kh-drop {
+  from { opacity: 0; transform: translate3d(0, -8px, 0); }
+  to { opacity: 1; transform: none; }
+}
+.kh-drop { animation: kh-drop 0.35s var(--kh-ease) both; }
+.kh-drop-item { animation: kh-rise 0.45s var(--kh-ease) both; animation-delay: var(--kh-delay, 0ms); }
+
+/* ---- Navigation underline ---- */
+.kh-nav-link { position: relative; }
+.kh-nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--color-saffron);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s var(--kh-ease);
+}
+.kh-nav-link:hover::after,
+.kh-nav-link[data-status="active"]::after { transform: scaleX(1); }
+
+/* ---- Primary button sheen ---- */
+.kh-sheen { position: relative; overflow: hidden; isolation: isolate; }
+.kh-sheen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(110deg, transparent 30%, oklch(1 0 0 / 38%) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 0.8s var(--kh-ease);
+  pointer-events: none;
+}
+.kh-sheen:hover::after { transform: translateX(120%); }
+
+/* ---- Headline accent: a saffron underline that draws in after the hero rises ---- */
+@keyframes kh-draw { from { background-size: 0% 0.14em; } to { background-size: 100% 0.14em; } }
+.kh-accent {
+  background-image: linear-gradient(90deg, var(--color-saffron), oklch(0.8 0.13 75));
+  background-repeat: no-repeat;
+  background-position: 0 92%;
+  background-size: 100% 0.14em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  animation: kh-draw 1s var(--kh-ease) 0.7s both;
+}
+
+/* ---- Surfaces ---- */
+.kh-surface-tint {
+  background:
+    radial-gradient(1100px 420px at 88% -10%, oklch(1 0 0 / 70%), transparent 62%),
+    radial-gradient(800px 360px at 0% 110%, oklch(0.72 0.15 62 / 7%), transparent 60%),
+    var(--color-tint);
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / 70%);
+}
+.kh-surface-navy {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(900px 420px at 100% 0%, oklch(0.72 0.15 62 / 16%), transparent 60%),
+    radial-gradient(700px 380px at 0% 100%, oklch(0.45 0.12 262 / 45%), transparent 65%),
+    linear-gradient(135deg, var(--color-navy), var(--color-brand-deep));
+}
+/* Fine grid texture, faded towards the edges. */
+.kh-surface-navy::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(oklch(1 0 0 / 5%) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(1 0 0 / 5%) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 70% 80% at 70% 30%, #000 20%, transparent 75%);
+  pointer-events: none;
+}
+
+/* Homepage hero: a directional scrim keeps text crisp while letting the film show through. */
+.kh-hero-scrim {
+  background: linear-gradient(
+    180deg,
+    oklch(0.97 0.007 85 / 90%) 0%,
+    oklch(0.97 0.007 85 / 84%) 100%
+  );
+}
+@media (min-width: 1024px) {
+  .kh-hero-scrim {
+    background: linear-gradient(
+      100deg,
+      oklch(0.97 0.007 85 / 95%) 0%,
+      oklch(0.97 0.007 85 / 90%) 42%,
+      oklch(0.97 0.007 85 / 62%) 100%
+    );
+  }
+}
+.kh-hero-dots {
+  background-image: radial-gradient(oklch(0.27 0.07 257 / 14%) 1px, transparent 1px);
+  background-size: 22px 22px;
+  mask-image: radial-gradient(ellipse 55% 70% at 85% 40%, #000 10%, transparent 70%);
+}
+
+/* Header scroll progress (scaleX set from JS through --kh-progress). */
+.kh-progress { transform: scaleX(var(--kh-progress, 0)); transform-origin: left; }
+
+/* ---- "The Innovation Spark" custom cursor (src/components/innovation-spark-cursor.tsx) ---- */
+/* Only active on fine, hover-capable pointers; the attribute is set by the component. */
+@media (hover: hover) and (pointer: fine) {
+  html[data-kh-cursor="on"],
+  html[data-kh-cursor="on"] * { cursor: none !important; }
+  /* Text fields keep the native caret so typing and selecting feel normal. */
+  html[data-kh-cursor="on"] :is(input:not([type="submit"], [type="button"], [type="checkbox"], [type="radio"], [type="range"]), textarea, [contenteditable=""], [contenteditable="true"]) {
+    cursor: text !important;
+  }
+}
+.kh-cursor { position: fixed; inset: 0; z-index: 9999; pointer-events: none; }
+.kh-cursor-ring,
+.kh-cursor-spark {
+  position: fixed;
+  left: 0;
+  top: 0;
+  border-radius: 9999px;
+  pointer-events: none;
+  will-change: transform;
+}
+.kh-cursor-ring {
+  width: 18px;
+  height: 18px;
+  background: var(--color-navy);
+  border: 1.5px solid transparent;
+  /* Hairline light edge keeps the cursor visible over navy sections. */
+  box-shadow: 0 0 0 1.5px oklch(1 0 0 / 75%), 0 2px 6px oklch(0.27 0.07 257 / 25%);
+  opacity: 1;
+  transition:
+    width 0.28s var(--kh-ease),
+    height 0.28s var(--kh-ease),
+    background-color 0.28s var(--kh-ease),
+    border-color 0.28s var(--kh-ease),
+    box-shadow 0.28s var(--kh-ease),
+    opacity 0.2s ease,
+    scale 0.18s var(--kh-ease);
+}
+.kh-cursor-spark {
+  width: 6px;
+  height: 6px;
+  background: var(--color-saffron);
+  box-shadow: 0 0 6px oklch(0.72 0.15 62 / 55%);
+  transition: opacity 0.2s ease, width 0.28s var(--kh-ease), height 0.28s var(--kh-ease);
+}
+/* Buttons and links: a touch larger, with a soft orange glow. */
+.kh-cursor-ring[data-state="link"] {
+  width: 28px;
+  height: 28px;
+  box-shadow:
+    0 0 0 1.5px oklch(1 0 0 / 75%),
+    0 0 0 5px oklch(0.72 0.15 62 / 18%),
+    0 0 18px oklch(0.72 0.15 62 / 40%);
+}
+.kh-cursor-spark[data-state="link"] { width: 7px; height: 7px; }
+/* Cards and images: a larger, thin outline with the spark kept at the centre. */
+.kh-cursor-ring[data-state="card"] {
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border-color: var(--color-navy);
+  box-shadow: 0 0 0 1px oklch(1 0 0 / 60%), inset 0 0 0 1px oklch(1 0 0 / 35%);
+}
+/* Text fields: step aside for the native caret. Leaving the window: hide. */
+.kh-cursor-ring:is([data-state="text"], [data-state="hidden"]),
+.kh-cursor-spark:is([data-state="text"], [data-state="hidden"]) { opacity: 0; }
+.kh-cursor-ring[data-pressed] { scale: 0.85; }
+
+@media (prefers-reduced-motion: reduce) {
+  .kh-cursor-ring,
+  .kh-cursor-spark { transition: none; }
+}
+
+/* ---- Reduced motion: keep every final state, drop every movement ---- */
+@media (prefers-reduced-motion: reduce) {
+  .kh-rise,
+  .kh-rise-card,
+  .kh-page > section:first-child > .container-site > *,
+  .kh-panel,
+  .kh-drop,
+  .kh-drop-item,
+  .kh-accent { animation: none !important; }
+  .kh-sheen::after { display: none; }
+  .kh-nav-link::after { transition: none; }
 }

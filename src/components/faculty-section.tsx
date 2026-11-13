@@ -16,16 +16,23 @@ export function FacultySection({
   faculty,
   tint,
   white,
+  id,
+  eyebrow,
+  className,
 }: {
   faculty: FacultyMember[];
   tint?: boolean;
   white?: boolean;
+  id?: string;
+  eyebrow?: string;
+  className?: string;
 }) {
   if (faculty.length === 0) return null;
 
   return (
-    <Section {...(tint ? { tint } : {})} {...(white ? { white } : {})}>
+    <Section {...(tint ? { tint } : {})} {...(white ? { white } : {})} {...(id ? { id } : {})} {...(className ? { className } : {})}>
       <SectionHeader
+        {...(eyebrow ? { eyebrow } : {})}
         title="Meet Your Faculty"
         sub="Learn from experienced professionals and subject-matter experts who bring practical knowledge and real-world perspectives to the learning experience."
       />
@@ -136,7 +143,7 @@ function CarouselArrow({
       disabled={disabled}
       aria-label={direction === "prev" ? "Previous faculty profiles" : "Next faculty profiles"}
       className={cn(
-        "grid h-11 w-11 place-items-center rounded-full border border-navy bg-card text-navy shadow-sm transition-colors hover:bg-navy hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:border-border disabled:text-navy/30 disabled:shadow-none disabled:hover:bg-card disabled:hover:text-navy/30",
+        "grid h-11 w-11 place-items-center rounded-full border border-navy bg-card text-navy shadow-card transition-[background-color,color,transform] duration-300 ease-brand hover:-translate-y-0.5 hover:bg-navy hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:border-border disabled:text-navy/30 disabled:shadow-none disabled:hover:bg-card disabled:hover:text-navy/30",
         className,
       )}
     >
@@ -147,19 +154,23 @@ function CarouselArrow({
 
 function FacultyCard({ member }: { member: FacultyMember }) {
   return (
-    <article className="flex h-full flex-col overflow-hidden rounded-lg border bg-card">
-      <FacultyPhoto
-        member={member}
-        className="aspect-[4/3] border-b sm:aspect-[4/5]"
-        loading="lazy"
-      />
-      <div className="flex flex-1 flex-col p-5">
+    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border/80 bg-card shadow-card transition-[box-shadow,border-color,transform] duration-500 ease-brand hover:-translate-y-1 hover:border-navy/15 hover:shadow-lift motion-reduce:transition-none motion-reduce:hover:translate-y-0">
+      <div className="relative p-2.5 pb-0">
+        <FacultyPhoto
+          member={member}
+          className="aspect-[4/3] rounded-xl sm:aspect-square"
+          imageClassName="transition-transform duration-[900ms] ease-brand group-hover:scale-[1.04] motion-reduce:transition-none"
+          loading="lazy"
+        />
+        <span aria-hidden="true" className="pointer-events-none absolute inset-x-2.5 bottom-0 h-16 rounded-b-xl bg-gradient-to-t from-navy/25 to-transparent" />
+      </div>
+      <div className="flex flex-1 flex-col p-5 md:p-6">
         <div className="flex items-start justify-between gap-3">
           <h3 className="h4 font-serif text-navy">{member.name}</h3>
           <LinkedInButton member={member} />
         </div>
-        <p className="mt-1 text-small font-medium text-slate">{member.designation}</p>
-        <p className="mt-4 flex-1 border-t pt-4 text-[15px] leading-6 text-slate">
+        <p className="mt-1.5 text-small font-semibold leading-5 text-saffron-ink">{member.designation}</p>
+        <p className="mt-4 flex-1 border-t border-border/70 pt-4 text-[15px] leading-6 text-slate">
           {member.shortBio}
         </p>
         <FacultyDialog member={member} />
@@ -181,7 +192,7 @@ function FacultyDialog({ member }: { member: FacultyMember }) {
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </SiteButton>
       </DialogTrigger>
-      <DialogContent className="max-h-[90vh] max-w-2xl gap-0 overflow-y-auto bg-card p-0">
+      <DialogContent className="max-h-[90vh] max-w-2xl gap-0 overflow-y-auto rounded-2xl border-border/80 bg-card p-0 shadow-float">
         <div className="grid gap-5 border-b p-5 pr-12 sm:grid-cols-[160px_1fr] sm:items-center sm:p-6 sm:pr-12">
           <FacultyPhoto
             member={member}
@@ -226,10 +237,12 @@ function FacultyDialog({ member }: { member: FacultyMember }) {
 function FacultyPhoto({
   member,
   className,
+  imageClassName,
   loading,
 }: {
   member: FacultyMember;
   className?: string;
+  imageClassName?: string;
   loading?: "lazy";
 }) {
   const [photoFailed, setPhotoFailed] = useState(false);
@@ -242,7 +255,7 @@ function FacultyPhoto({
           alt={`Portrait of ${member.name}`}
           {...(loading ? { loading } : {})}
           onError={() => setPhotoFailed(true)}
-          className="h-full w-full object-cover object-top"
+          className={cn("h-full w-full object-cover object-top", imageClassName)}
         />
       ) : (
         <div

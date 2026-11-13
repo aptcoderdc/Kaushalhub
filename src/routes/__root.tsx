@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
   type ErrorComponentProps,
@@ -15,6 +16,8 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Navbar, Footer, StickyApply } from "../components/site";
 import { publicAsset } from "../lib/public-asset";
 import { WhatsAppContact } from "../components/whatsapp-contact";
+import { useScrollReveal } from "../hooks/use-scroll-reveal";
+import { InnovationSparkCursor } from "../components/innovation-spark-cursor";
 
 function NotFoundComponent() {
   return (
@@ -91,7 +94,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" },
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: publicAsset("/images/brand/kaushal-hub-mark-transparent.png"), type: "image/png" },
+      { rel: "icon", href: publicAsset("/images/brand/favicon-48.png"), type: "image/png", sizes: "48x48" },
+      { rel: "apple-touch-icon", href: publicAsset("/images/brand/apple-touch-icon.png"), sizes: "180x180" },
     ],
   }),
   shellComponent: RootShell,
@@ -116,6 +120,8 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  useScrollReveal(pathname);
   const programCta = {
     ctaLabel: "Apply Now",
     ctaTo: "/experience-to-enterprise",
@@ -126,11 +132,16 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <Navbar {...programCta} />
       <main>
-        <Outlet />
+        {/* Keyed so each route's opening section plays its entrance once. */}
+        <div key={pathname} className="kh-page">
+          <Outlet />
+        </div>
       </main>
       <Footer />
       <StickyApply {...programCta} />
       <WhatsAppContact />
+      {/* "Innovation Spark" custom cursor, site-wide (mouse/trackpad only). */}
+      <InnovationSparkCursor />
     </QueryClientProvider>
   );
 }

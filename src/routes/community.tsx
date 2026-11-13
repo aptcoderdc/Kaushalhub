@@ -76,7 +76,7 @@ function Community() {
             title="Join the Community"
             sub="Share a few details so we can understand your interests and how you might like to participate."
           />
-          <div className="mt-8 rounded-lg border bg-card p-5 md:p-8">
+          <div className="mt-8 rounded-xl border border-border/80 bg-card p-5 shadow-card md:p-8">
             <p className="mb-6 text-small leading-6 text-slate" role="status">
               Community sign-up is being prepared. This form is not connected to a registration
               service yet, so submissions cannot currently be received.
