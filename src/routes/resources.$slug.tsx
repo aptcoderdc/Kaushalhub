@@ -1,7 +1,8 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { ResourceArticle } from "@/components/knowledge";
 import { ButtonLink, Section } from "@/components/site";
-import { canonicalLinks, findPublishedResource } from "@/lib/resources";
+import { canonicalLinks, findPublishedResource, ogUrlMeta } from "@/lib/resources";
+import { articleSchema, breadcrumbSchema, jsonLd } from "@/lib/seo";
 
 export const Route = createFileRoute("/resources/$slug")({
   loader: ({ params }) => {
@@ -16,6 +17,7 @@ export const Route = createFileRoute("/resources/$slug")({
       { property: "og:title", content: loaderData.title },
       { property: "og:description", content: loaderData.summary },
       { property: "og:type", content: "article" },
+      ogUrlMeta(`/resources/${loaderData.slug}`),
       { name: "twitter:card", content: "summary_large_image" },
     ] : [
       { title: "Resource unavailable | Kaushal Hub Knowledge Library" },
@@ -26,6 +28,14 @@ export const Route = createFileRoute("/resources/$slug")({
       { name: "robots", content: "noindex, nofollow" },
     ],
     links: loaderData ? canonicalLinks(`/resources/${loaderData.slug}`) : [],
+    scripts: loaderData
+      ? [
+          jsonLd([
+            articleSchema(loaderData),
+            breadcrumbSchema([["Knowledge Library", "/resources"], [loaderData.title, `/resources/${loaderData.slug}`]]),
+          ]),
+        ]
+      : [],
   }),
   component: ResourcePage,
   notFoundComponent: UnavailableResource,

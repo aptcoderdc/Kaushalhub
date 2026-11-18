@@ -16,6 +16,7 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ExperienceToEnterpriseRouteImport } from './routes/experience-to-enterprise'
 import { Route as ProgramsRouteImport } from './routes/programs'
 import { Route as ResourcesRouteImport } from './routes/resources'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ProgramsProgramSlugRouteImport } from './routes/programs.$programSlug'
 import { Route as ResourcesIndexRouteImport } from './routes/resources.index'
 import { Route as ResourcesSlugRouteImport } from './routes/resources.$slug'
@@ -55,6 +56,11 @@ const ResourcesRoute = ResourcesRouteImport.update({
   path: '/resources',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProgramsProgramSlugRoute = ProgramsProgramSlugRouteImport.update({
   id: '/$programSlug',
   path: '/$programSlug',
@@ -79,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/experience-to-enterprise': typeof ExperienceToEnterpriseRoute
   '/programs': typeof ProgramsRouteWithChildren
   '/resources': typeof ResourcesRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/programs/$programSlug': typeof ProgramsProgramSlugRoute
   '/resources/$slug': typeof ResourcesSlugRoute
   '/resources/': typeof ResourcesIndexRoute
@@ -90,6 +97,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/experience-to-enterprise': typeof ExperienceToEnterpriseRoute
   '/programs': typeof ProgramsRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/programs/$programSlug': typeof ProgramsProgramSlugRoute
   '/resources/$slug': typeof ResourcesSlugRoute
   '/resources': typeof ResourcesIndexRoute
@@ -103,6 +111,7 @@ export interface FileRoutesById {
   '/experience-to-enterprise': typeof ExperienceToEnterpriseRoute
   '/programs': typeof ProgramsRouteWithChildren
   '/resources': typeof ResourcesRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/programs/$programSlug': typeof ProgramsProgramSlugRoute
   '/resources/$slug': typeof ResourcesSlugRoute
   '/resources/': typeof ResourcesIndexRoute
@@ -117,6 +126,7 @@ export interface FileRouteTypes {
     | '/experience-to-enterprise'
     | '/programs'
     | '/resources'
+    | '/sitemap.xml'
     | '/programs/$programSlug'
     | '/resources/$slug'
     | '/resources/'
@@ -128,6 +138,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/experience-to-enterprise'
     | '/programs'
+    | '/sitemap.xml'
     | '/programs/$programSlug'
     | '/resources/$slug'
     | '/resources'
@@ -140,6 +151,7 @@ export interface FileRouteTypes {
     | '/experience-to-enterprise'
     | '/programs'
     | '/resources'
+    | '/sitemap.xml'
     | '/programs/$programSlug'
     | '/resources/$slug'
     | '/resources/'
@@ -153,6 +165,7 @@ export interface RootRouteChildren {
   ExperienceToEnterpriseRoute: typeof ExperienceToEnterpriseRoute
   ProgramsRoute: typeof ProgramsRouteWithChildren
   ResourcesRoute: typeof ResourcesRouteWithChildren
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -204,6 +217,13 @@ declare module '@tanstack/react-router' {
       path: '/resources'
       fullPath: '/resources'
       preLoaderRoute: typeof ResourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/programs/$programSlug': {
@@ -264,6 +284,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExperienceToEnterpriseRoute: ExperienceToEnterpriseRoute,
   ProgramsRoute: ProgramsRouteWithChildren,
   ResourcesRoute: ResourcesRouteWithChildren,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1316,17 +1316,34 @@ export function findPublishedResource(slug: string) {
   return getPublishedResources().find((resource) => resource.slug === slug);
 }
 
-// Set only to the verified published/custom origin, never the draft preview origin.
-export const PUBLIC_SITE_ORIGIN = "";
-export function canonicalLinks(path: string) {
-  return [{ rel: "canonical", href: PUBLIC_SITE_ORIGIN ? `${PUBLIC_SITE_ORIGIN}${path}` : path }];
+// Verified published custom domain (GitHub Pages CNAME). Never a draft/preview origin.
+export const PUBLIC_SITE_ORIGIN = "https://kaushalhub.in";
+
+/**
+ * Absolute public URL for a page. GitHub Pages serves each prerendered page as
+ * `<path>/index.html` and 301-redirects `/path` to `/path/`, so the preferred URL that
+ * returns 200 always ends in a slash.
+ */
+export function publicPageUrl(path: string) {
+  const [pathname = "/", hash] = path.split("#");
+  const withSlash = pathname === "/" ? "/" : `${pathname.replace(/\/+$/, "")}/`;
+  return `${PUBLIC_SITE_ORIGIN}${withSlash}${hash ? `#${hash}` : ""}`;
 }
+export function canonicalLinks(path: string) {
+  return [{ rel: "canonical", href: publicPageUrl(path) }];
+}
+/** Page-level social URL, matching the canonical. */
+export function ogUrlMeta(path: string) {
+  return { property: "og:url", content: publicPageUrl(path) };
+}
+/** Public, indexable pages (used by the sitemap). Program pages are added by the sitemap route. */
 export function publishedPagePaths() {
   return [
     "/",
     "/about",
     "/programs",
     "/experience-to-enterprise",
+    "/community",
     "/contact",
     "/resources",
     ...getPublishedResources().map((resource) => `/resources/${resource.slug}`),

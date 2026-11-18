@@ -15,6 +15,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Navbar, Footer, StickyApply } from "../components/site";
 import { publicAsset } from "../lib/public-asset";
+import { SITE_NAME, SOCIAL_IMAGE } from "../lib/seo";
 import { WhatsAppContact } from "../components/whatsapp-contact";
 import { useScrollReveal } from "../hooks/use-scroll-reveal";
 import { InnovationSparkCursor } from "../components/innovation-spark-cursor";
@@ -87,7 +88,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "Kaushal Hub" },
       { name: "description", content: "Practical learning, knowledge and opportunity from Kaushal Hub." },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: SITE_NAME },
+      { property: "og:locale", content: "en_IN" },
+      { property: "og:image", content: SOCIAL_IMAGE },
+      { property: "og:image:alt", content: "Kaushal Hub — Elevate Your Potential" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: SOCIAL_IMAGE },
+      { name: "theme-color", content: "#0F2747" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },

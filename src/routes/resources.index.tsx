@@ -4,11 +4,12 @@ import { BookOpen, LayoutGrid } from "lucide-react";
 import { Section, buttonClass } from "@/components/site";
 import { ResourceCard, categoryIcons } from "@/components/knowledge";
 import {
-  canonicalLinks,
+  canonicalLinks, ogUrlMeta,
   getPublishedResources,
   resourceCategories,
   type ResourceCategory,
 } from "@/lib/resources";
+import { breadcrumbSchema, jsonLd } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/resources/")({
@@ -27,9 +28,11 @@ export const Route = createFileRoute("/resources/")({
           "Explore practical guides to validating ideas, understanding customers and making better business decisions.",
       },
       { property: "og:type", content: "website" },
+      ogUrlMeta("/resources"),
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: canonicalLinks("/resources"),
+    scripts: [jsonLd(breadcrumbSchema([["Knowledge Library", "/resources"]]))],
   }),
   component: KnowledgeLibrary,
 });

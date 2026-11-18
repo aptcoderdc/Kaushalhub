@@ -2,7 +2,12 @@ import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-r
 import { ArrowRight, CalendarClock, Clock, Landmark, type LucideIcon } from "lucide-react";
 import workshop from "@/assets/workshop.webp";
 import { ButtonLink, FittPill, Section, interactiveCardSurface } from "@/components/site";
-import { canonicalLinks } from "@/lib/resources";
+import { canonicalLinks, ogUrlMeta } from "@/lib/resources";
+import { breadcrumbSchema, jsonLd } from "@/lib/seo";
+
+/** The layout also wraps program detail pages, which set their own canonical and schema. */
+const isProgramDetail = (matches: { routeId: unknown }[]) =>
+  matches.some((match) => String(match.routeId) === "/programs/$programSlug");
 import { supportingPrograms } from "@/lib/program-nav";
 import { cn } from "@/lib/utils";
 
@@ -29,10 +34,10 @@ export const Route = createFileRoute("/programs")({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      ...(isProgramDetail(matches) ? [] : [ogUrlMeta("/programs")]),
     ],
-    links: matches.some((match) => String(match.routeId) === "/programs/$programSlug")
-      ? []
-      : canonicalLinks("/programs"),
+    links: isProgramDetail(matches) ? [] : canonicalLinks("/programs"),
+    scripts: isProgramDetail(matches) ? [] : [jsonLd(breadcrumbSchema([["Programs", "/programs"]]))],
   }),
   component: Programs,
 });

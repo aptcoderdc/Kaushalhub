@@ -5,7 +5,8 @@ import workshop from "@/assets/workshop.webp";
 import discussion from "@/assets/discussion.webp";
 import { Accordion, ButtonLink, Card, FittPill, Section, SectionHeader, interactiveCardSurface } from "@/components/site";
 import { cn } from "@/lib/utils";
-import { canonicalLinks, getPublishedResources } from "@/lib/resources";
+import { canonicalLinks, ogUrlMeta, getPublishedResources } from "@/lib/resources";
+import { jsonLd, organizationSchema, websiteSchema } from "@/lib/seo";
 import { organisationLogos } from "@/lib/organisation-logos";
 import { supportingPrograms } from "@/lib/program-nav";
 import { publicAsset } from "@/lib/public-asset";
@@ -18,9 +19,11 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Kaushal Hub | Practical Learning, Knowledge & Opportunity" },
       { property: "og:description", content: "Explore practical learning programs, expert knowledge and opportunities to turn knowledge into action with Kaushal Hub." },
       { property: "og:type", content: "website" },
+      ogUrlMeta("/"),
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: canonicalLinks("/"),
+    scripts: [jsonLd([organizationSchema, websiteSchema])],
   }),
   component: Home,
 });

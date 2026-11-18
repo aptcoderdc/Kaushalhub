@@ -39,7 +39,8 @@ import { SectionNav, type SectionNavItem } from "@/components/section-nav";
 import { ExperienceApplicationForm } from "@/components/experience-application-form";
 import { FacultySection } from "@/components/faculty-section";
 import { facultyMembers } from "@/lib/faculty";
-import { canonicalLinks } from "@/lib/resources";
+import { canonicalLinks, ogUrlMeta } from "@/lib/resources";
+import { breadcrumbSchema, experienceToEnterpriseCourseSchema, jsonLd } from "@/lib/seo";
 import { publicAsset } from "@/lib/public-asset";
 import { cn } from "@/lib/utils";
 
@@ -59,9 +60,11 @@ export const Route = createFileRoute("/experience-to-enterprise")({
           "Test the leap before you take it. A 12-week venture-building program for experienced professionals.",
       },
       { property: "og:type", content: "website" },
+      ogUrlMeta("/experience-to-enterprise"),
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: canonicalLinks("/experience-to-enterprise"),
+    scripts: [jsonLd([experienceToEnterpriseCourseSchema, breadcrumbSchema([["Programs", "/programs"], ["Experience to Enterprise", "/experience-to-enterprise"]])])],
   }),
   component: Program,
 });

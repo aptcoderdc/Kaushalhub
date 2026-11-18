@@ -1,7 +1,8 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { ProgramDetail } from "@/components/program-detail";
 import { ButtonLink, Section } from "@/components/site";
-import { canonicalLinks } from "@/lib/resources";
+import { canonicalLinks, ogUrlMeta } from "@/lib/resources";
+import { breadcrumbSchema, jsonLd, programCourseSchema } from "@/lib/seo";
 import { findProgram } from "@/lib/programs";
 
 export const Route = createFileRoute("/programs/$programSlug")({
@@ -18,6 +19,7 @@ export const Route = createFileRoute("/programs/$programSlug")({
           { property: "og:title", content: `${loaderData.title} | Kaushal Hub` },
           { property: "og:description", content: loaderData.seoDescription },
           { property: "og:type", content: "website" },
+          ogUrlMeta(loaderData.path),
           { name: "twitter:card", content: "summary_large_image" },
         ]
       : [
@@ -26,6 +28,14 @@ export const Route = createFileRoute("/programs/$programSlug")({
           { name: "robots", content: "noindex, nofollow" },
         ],
     links: loaderData ? canonicalLinks(loaderData.path) : [],
+    scripts: loaderData
+      ? [
+          jsonLd([
+            programCourseSchema(loaderData),
+            breadcrumbSchema([["Programs", "/programs"], [loaderData.title, loaderData.path]]),
+          ]),
+        ]
+      : [],
   }),
   component: ProgramPage,
   notFoundComponent: UnavailableProgram,

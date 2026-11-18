@@ -16,7 +16,8 @@ import {
 import discussion from "@/assets/discussion.webp";
 import { ButtonLink, Section, SectionHeader, areas, cardSurface, interactiveCardSurface } from "@/components/site";
 import { cn } from "@/lib/utils";
-import { canonicalLinks } from "@/lib/resources";
+import { canonicalLinks, ogUrlMeta } from "@/lib/resources";
+import { breadcrumbSchema, jsonLd } from "@/lib/seo";
 import { organisationLogos } from "@/lib/organisation-logos";
 
 export const Route = createFileRoute("/about")({
@@ -35,9 +36,11 @@ export const Route = createFileRoute("/about")({
           "Practical learning, emerging technologies, entrepreneurship and a community built around knowledge and opportunity.",
       },
       { property: "og:type", content: "website" },
+      ogUrlMeta("/about"),
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: canonicalLinks("/about"),
+    scripts: [jsonLd(breadcrumbSchema([["About", "/about"]]))],
   }),
   component: About,
 });

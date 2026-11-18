@@ -13,7 +13,8 @@ import {
 } from "lucide-react";
 import { Field, Section, buttonClass, cardSurface } from "@/components/site";
 import { cn } from "@/lib/utils";
-import { canonicalLinks } from "@/lib/resources";
+import { canonicalLinks, ogUrlMeta } from "@/lib/resources";
+import { breadcrumbSchema, jsonLd } from "@/lib/seo";
 
 const directionsUrl = "https://maps.app.goo.gl/PKSL1UK9TJZ1oJ5V9";
 
@@ -41,9 +42,11 @@ export const Route = createFileRoute("/contact")({
         content: "Have a question or idea to discuss? Get in touch with Kaushal Hub.",
       },
       { property: "og:type", content: "website" },
+      ogUrlMeta("/contact"),
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: canonicalLinks("/contact"),
+    scripts: [jsonLd(breadcrumbSchema([["Contact", "/contact"]]))],
   }),
   component: Contact,
 });

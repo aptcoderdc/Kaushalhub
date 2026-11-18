@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { CommunityForm } from "@/components/ApplyForm";
 import { Section, SectionHeader } from "@/components/site";
-import { canonicalLinks } from "@/lib/resources";
+import { canonicalLinks, ogUrlMeta } from "@/lib/resources";
+import { breadcrumbSchema, jsonLd } from "@/lib/seo";
 
 const participationAreas = [
   {
@@ -38,9 +39,11 @@ export const Route = createFileRoute("/community")({
           "A space for people to exchange knowledge, explore opportunities, learn from others and stay connected with the Kaushal Hub ecosystem.",
       },
       { property: "og:type", content: "website" },
+      ogUrlMeta("/community"),
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: canonicalLinks("/community"),
+    scripts: [jsonLd(breadcrumbSchema([["Community", "/community"]]))],
   }),
   component: Community,
 });
