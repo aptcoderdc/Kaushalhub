@@ -47,11 +47,11 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/experience-to-enterprise")({
   head: () => ({
     meta: [
-      { title: "Experience to Enterprise | Kaushal Hub" },
+      { title: "Experience to Enterprise | 12-Week Program | Kaushal Hub" },
       {
         name: "description",
         content:
-          "Explore a 12-week venture-building certificate program for experienced professionals, focused on customer validation, practical experimentation and business viability.",
+          "A 12-week venture-building certificate program for experienced professionals, focused on customer validation, practical experimentation and business viability.",
       },
       { property: "og:title", content: "Experience to Enterprise | Kaushal Hub" },
       {

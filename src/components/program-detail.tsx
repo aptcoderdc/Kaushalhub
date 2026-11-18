@@ -240,7 +240,7 @@ function ProgramContentSection({ section }: { section: ProgramSection }) {
           </div>
           <div className="lg:col-span-5">
             <div className="flex items-center gap-4 rounded-2xl border border-primary-foreground/15 bg-primary-foreground/[0.06] p-5 backdrop-blur">
-              <img src={CAMPUS_IMAGE} alt="" aria-hidden="true" width={96} height={72} loading="lazy" className="h-16 w-20 shrink-0 rounded-xl object-cover" />
+              <img src={CAMPUS_IMAGE} alt="FITT, IIT Delhi campus" aria-hidden="true" width={96} height={72} loading="lazy" className="h-16 w-20 shrink-0 rounded-xl object-cover" />
               <div>
                 <p className="flex items-center gap-1.5 text-[12px] font-semibold uppercase tracking-[0.12em] text-saffron">
                   <Landmark className="h-3.5 w-3.5" aria-hidden="true" /> IIT Delhi

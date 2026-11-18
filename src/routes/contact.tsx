@@ -31,10 +31,10 @@ export const Route = createFileRoute("/contact")({
   },
   head: () => ({
     meta: [
-      { title: "Contact Kaushal Hub" },
+      { title: "Contact Kaushal Hub | Programs, Partnerships & Enquiries" },
       {
         name: "description",
-        content: "Contact Kaushal Hub with a question, partnership idea or general enquiry.",
+        content: "Contact Kaushal Hub with a question about our programs, a partnership idea or a general enquiry. Reach our Noida team by email, phone or WhatsApp.",
       },
       { property: "og:title", content: "Contact Kaushal Hub" },
       {

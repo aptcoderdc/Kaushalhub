@@ -15,9 +15,9 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Kaushal Hub | Practical Learning, Knowledge & Opportunity" },
-      { name: "description", content: "Explore practical learning programs, expert knowledge and opportunities to turn knowledge into action with Kaushal Hub." },
+      { name: "description", content: "Explore practical learning programs, expert knowledge and opportunities to turn knowledge into action with Kaushal Hub, an initiative of SNN Eduworld." },
       { property: "og:title", content: "Kaushal Hub | Practical Learning, Knowledge & Opportunity" },
-      { property: "og:description", content: "Explore practical learning programs, expert knowledge and opportunities to turn knowledge into action with Kaushal Hub." },
+      { property: "og:description", content: "Explore practical learning programs, expert knowledge and opportunities to turn knowledge into action with Kaushal Hub, an initiative of SNN Eduworld." },
       { property: "og:type", content: "website" },
       ogUrlMeta("/"),
       { name: "twitter:card", content: "summary_large_image" },
@@ -108,7 +108,7 @@ function InstitutionalLogoSequence({ decorative = false }: { decorative?: boolea
         <li key={name} className="flex shrink-0 items-center">
           <img
             src={src}
-            alt={decorative ? "" : name}
+            alt={name}
             width={width}
             height={height}
             className="h-7 w-auto max-w-[96px] object-contain md:h-9 md:max-w-[128px]"
@@ -126,12 +126,12 @@ function InstitutionalLogoStrip() {
       className="border-b bg-background py-2.5"
     >
       <div className="container-site flex items-center gap-3 md:gap-6">
-        <h2
+        <p
           id="institutional-logo-heading"
-          className="max-w-[6.75rem] shrink-0 text-[13px] font-semibold leading-tight text-navy sm:max-w-none sm:whitespace-nowrap sm:text-small"
+          className="max-w-[6.75rem] shrink-0 font-serif text-[13px] font-semibold leading-tight text-navy sm:max-w-none sm:whitespace-nowrap sm:text-small"
         >
           Our Ecosystem Partners
-        </h2>
+        </p>
         <span className="h-8 w-px shrink-0 bg-border" aria-hidden="true" />
         <div className="institutional-logo-marquee min-w-0 flex-1">
           <div className="institutional-logo-track">
@@ -285,12 +285,13 @@ function HomeKnowledgeLibrary() {
 /* Community: navy panel with a connected-network illustration       */
 /* ---------------------------------------------------------------- */
 
-const networkNodes: { x: number; y: number; Icon: LucideIcon; hub?: boolean }[] = [
-  { x: 50, y: 50, Icon: UsersRound, hub: true },
-  { x: 18, y: 22, Icon: BookOpen },
-  { x: 82, y: 20, Icon: Hammer },
-  { x: 86, y: 74, Icon: MessagesSquare },
-  { x: 20, y: 80, Icon: Compass },
+// `position` repeats x/y as static classes, so the nodes are placed without inline styles.
+const networkNodes: { x: number; y: number; position: string; Icon: LucideIcon; hub?: boolean }[] = [
+  { x: 50, y: 50, position: "left-[50%] top-[50%]", Icon: UsersRound, hub: true },
+  { x: 18, y: 22, position: "left-[18%] top-[22%]", Icon: BookOpen },
+  { x: 82, y: 20, position: "left-[82%] top-[20%]", Icon: Hammer },
+  { x: 86, y: 74, position: "left-[86%] top-[74%]", Icon: MessagesSquare },
+  { x: 20, y: 80, position: "left-[20%] top-[80%]", Icon: Compass },
 ];
 
 function CommunityNetwork() {
@@ -304,11 +305,11 @@ function CommunityNetwork() {
         ))}
         <path d="M18 22 Q50 6 82 20 M86 74 Q52 94 20 80" fill="none" stroke="oklch(1 0 0 / 14%)" strokeWidth="0.4" />
       </svg>
-      {networkNodes.map(({ x, y, Icon, hub }, i) => (
+      {networkNodes.map(({ position, Icon, hub }, i) => (
         <span
           key={i}
-          style={{ left: `${x}%`, top: `${y}%` }}
           className={cn(
+            position,
             "absolute grid -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full",
             hub ? "h-16 w-16 bg-saffron text-navy shadow-[0_0_0_7px_oklch(0.72_0.15_62/15%)]" : "h-10 w-10 border border-primary-foreground/20 bg-primary-foreground/10 text-primary-foreground backdrop-blur",
           )}
@@ -585,7 +586,7 @@ function Home() {
       <section data-hero className="section-pad relative isolate overflow-hidden lg:py-28">
         <img
           src={workshop}
-          alt=""
+          alt="Professionals discussing ideas around a table at a Kaushal Hub workshop"
           aria-hidden="true"
           width={1280}
           height={960}

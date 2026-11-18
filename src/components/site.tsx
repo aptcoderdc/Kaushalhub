@@ -4,6 +4,7 @@ import { ChevronDown, Menu, X, Check, ArrowRight, ArrowUpRight, Facebook, Instag
 import { cn } from "@/lib/utils";
 import { publicAsset } from "@/lib/public-asset";
 import { brandLogos } from "@/lib/brand";
+import { socialProfileUrls } from "@/lib/social";
 import type { Program } from "@/lib/programs";
 import { featuredProgram, supportingPrograms } from "@/lib/program-nav";
 
@@ -398,7 +399,7 @@ export function Footer() {
     { name: "LinkedIn", Icon: Linkedin },
     { name: "Instagram", Icon: Instagram },
     { name: "YouTube", Icon: Youtube },
-  ];
+  ].map((profile) => ({ ...profile, url: (socialProfileUrls as Partial<Record<string, string>>)[profile.name] }));
   return (
     <footer className="bg-brand-deep pb-24 pt-12 text-primary-foreground md:pb-8 md:pt-14">
       <div className="container-site">
@@ -436,11 +437,23 @@ export function Footer() {
             <div className="mt-4">
               <p className="text-small font-medium text-primary-foreground/75">Social</p>
               <ul className="mt-2 flex items-center gap-4">
-                {socialProfiles.map(({ name, Icon }) => (
+                {socialProfiles.map(({ name, Icon, url }) => (
                   <li key={name}>
+                    {url ? (
+                      <a
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Kaushal Hub on ${name} (opens in a new tab)`}
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-sm text-primary-foreground/70 transition-colors hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-brand-deep"
+                      >
+                        <Icon className="h-5 w-5" aria-hidden="true" />
+                      </a>
+                    ) : (
                     <span role="img" aria-label={`${name}: no verified profile available`} className="inline-flex h-8 w-8 items-center justify-center text-primary-foreground/70">
                       <Icon className="h-5 w-5" aria-hidden="true" />
                     </span>
+                    )}
                   </li>
                 ))}
               </ul>

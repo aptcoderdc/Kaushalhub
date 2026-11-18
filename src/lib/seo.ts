@@ -7,6 +7,7 @@ import {
   resourceCategories,
   type Resource,
 } from "@/lib/resources";
+import { socialProfileUrls } from "@/lib/social";
 
 /**
  * Search-engine metadata helpers. Everything here is invisible on the page and is built
@@ -22,6 +23,25 @@ export const SOCIAL_IMAGE = `${PUBLIC_SITE_ORIGIN}/images/brand/kaushal-hub-logo
 
 type JsonLd = Record<string, unknown>;
 
+/** "<page> | Kaushal Hub" when that fits Google's ~60-character title width, else the page name alone. */
+export function pageTitle(name: string) {
+  const branded = `${name} | ${SITE_NAME}`;
+  return branded.length <= 60 ? branded : name;
+}
+
+/**
+ * Article summaries are sometimes shorter than the 120–160 characters search results show,
+ * so a short summary gets a line naming the Knowledge Library, as long as it still fits.
+ */
+export function resourceMetaDescription(summary: string) {
+  if (summary.length >= 120) return summary;
+  for (const suffix of ["A practical guide from the Kaushal Hub Knowledge Library.", "From the Kaushal Hub Knowledge Library."]) {
+    const text = `${summary} ${suffix}`;
+    if (text.length <= 160) return text;
+  }
+  return summary;
+}
+
 /** A `<script type="application/ld+json">` entry for a route's `head().scripts`. */
 export function jsonLd(data: JsonLd | JsonLd[]) {
   const graph = Array.isArray(data) ? data : [data];
@@ -33,8 +53,9 @@ export function jsonLd(data: JsonLd | JsonLd[]) {
 
 const organizationRef = { "@id": ORG_ID };
 
+/** The Noida office is the organisation's published address, so it is also a LocalBusiness. */
 export const organizationSchema: JsonLd = {
-  "@type": "Organization",
+  "@type": ["EducationalOrganization", "LocalBusiness"],
   "@id": ORG_ID,
   name: SITE_NAME,
   alternateName: "KaushalHub",
@@ -42,6 +63,8 @@ export const organizationSchema: JsonLd = {
   logo: { "@type": "ImageObject", url: SOCIAL_IMAGE, width: 1877, height: 503 },
   email: "hello@kaushalhub.in",
   telephone: "+91-9318497057",
+  image: SOCIAL_IMAGE,
+  areaServed: { "@type": "Country", name: "India" },
   address: {
     "@type": "PostalAddress",
     streetAddress: "C-26, C Block, Sector 59",
@@ -51,6 +74,7 @@ export const organizationSchema: JsonLd = {
     addressCountry: "IN",
   },
   parentOrganization: { "@type": "Organization", name: "SNN Eduworld Pvt. Ltd." },
+  sameAs: Object.values(socialProfileUrls),
 };
 
 export const websiteSchema: JsonLd = {
@@ -173,4 +197,42 @@ export function sitemapXml() {
     return `  <url>\n    <loc>${escape(loc)}</loc>${lastmod ? `\n    <lastmod>${escape(lastmod)}</lastmod>` : ""}\n  </url>`;
   });
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries.join("\n")}\n</urlset>\n`;
+}
+
+/**
+ * /llms.txt (llmstxt.org): a plain Markdown map of the site for AI assistants and AI search,
+ * built from the same published pages, programs and articles as the sitemap.
+ */
+export function llmsTxt() {
+  const link = (name: string, path: string, note?: string) =>
+    `- [${name}](${publicPageUrl(path)})${note ? `: ${note}` : ""}`;
+  const resources = getPublishedResources();
+  const sections = [
+    `# ${SITE_NAME}`,
+    "> Kaushal Hub, an initiative of SNN Eduworld Pvt. Ltd., brings together practical learning programs, a Knowledge Library of business guides and a community built around knowledge and opportunity.",
+    "Based in Noida, Uttar Pradesh, India. Contact: hello@kaushalhub.in, +91-9318497057.",
+    [
+      "## Main pages",
+      link("Home", "/", "Overview of programs, the Knowledge Library and community"),
+      link("About", "/about", "Who we are and what we work on"),
+      link("Programs", "/programs", "All practical learning programs"),
+      link("Community", "/community", "Ways to learn, share expertise and connect"),
+      link("Contact", "/contact", "Questions, partnerships and enquiries"),
+    ].join("\n"),
+    [
+      "## Programs",
+      link(
+        "Experience to Enterprise",
+        "/experience-to-enterprise",
+        "A 12-week venture-building certificate program for experienced professionals, with campus immersion at FITT, IIT Delhi",
+      ),
+      ...programs.map((program) => link(program.title, program.path, program.seoDescription)),
+    ].join("\n"),
+    [
+      "## Knowledge Library",
+      link("Knowledge Library", "/resources", "Practical guides to validating ideas, customers, pricing, pilots and business decisions"),
+      ...resources.map((resource) => link(resource.title, `/resources/${resource.slug}`, resource.summary)),
+    ].join("\n"),
+  ];
+  return `${sections.join("\n\n")}\n`;
 }

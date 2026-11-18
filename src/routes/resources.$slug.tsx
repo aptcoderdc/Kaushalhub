@@ -2,7 +2,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { ResourceArticle } from "@/components/knowledge";
 import { ButtonLink, Section } from "@/components/site";
 import { canonicalLinks, findPublishedResource, ogUrlMeta } from "@/lib/resources";
-import { articleSchema, breadcrumbSchema, jsonLd } from "@/lib/seo";
+import { articleSchema, breadcrumbSchema, jsonLd, pageTitle, resourceMetaDescription } from "@/lib/seo";
 
 export const Route = createFileRoute("/resources/$slug")({
   loader: ({ params }) => {
@@ -12,8 +12,8 @@ export const Route = createFileRoute("/resources/$slug")({
   },
   head: ({ loaderData }) => ({
     meta: loaderData ? [
-      { title: `${loaderData.title} | Kaushal Hub Knowledge Library` },
-      { name: "description", content: loaderData.summary },
+      { title: pageTitle(loaderData.title) },
+      { name: "description", content: resourceMetaDescription(loaderData.summary) },
       { property: "og:title", content: loaderData.title },
       { property: "og:description", content: loaderData.summary },
       { property: "og:type", content: "article" },

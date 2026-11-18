@@ -26,7 +26,7 @@ const participationAreas = [
 export const Route = createFileRoute("/community")({
   head: () => ({
     meta: [
-      { title: "The Kaushal Hub Community" },
+      { title: "The Kaushal Hub Community | Learn, Share and Connect" },
       {
         name: "description",
         content:

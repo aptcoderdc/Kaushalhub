@@ -20,11 +20,11 @@ const featuredFacts: [LucideIcon, string][] = [
 export const Route = createFileRoute("/programs")({
   head: ({ matches }) => ({
     meta: [
-      { title: "Programs — Kaushal Hub" },
+      { title: "Programs | Practical Learning Programs at Kaushal Hub" },
       {
         name: "description",
         content:
-          "Practical programs designed around capability, opportunity and real-world application.",
+          "Practical programs designed around capability, opportunity and real-world application, from school entrepreneurship to generative AI and venture building.",
       },
       { property: "og:title", content: "Programs — Kaushal Hub" },
       {

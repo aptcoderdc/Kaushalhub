@@ -19,6 +19,7 @@ const pagesBase = process.env["GITHUB_PAGES_BASE"];
 const prerenderPages = [
   ...publishedPagePaths().map((path) => ({ path })),
   { path: "/sitemap.xml", sitemap: { exclude: true } },
+  { path: "/llms.txt", sitemap: { exclude: true } },
 ];
 
 export default defineConfig({

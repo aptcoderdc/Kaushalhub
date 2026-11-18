@@ -16,6 +16,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Navbar, Footer, StickyApply } from "../components/site";
 import { publicAsset } from "../lib/public-asset";
 import { SITE_NAME, SOCIAL_IMAGE } from "../lib/seo";
+import { GOOGLE_SITE_VERIFICATION, gaBootstrapScript } from "../lib/analytics";
 import { WhatsAppContact } from "../components/whatsapp-contact";
 import { useScrollReveal } from "../hooks/use-scroll-reveal";
 import { InnovationSparkCursor } from "../components/innovation-spark-cursor";
@@ -95,6 +96,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:image", content: SOCIAL_IMAGE },
       { name: "theme-color", content: "#0F2747" },
+      { name: "google-site-verification", content: GOOGLE_SITE_VERIFICATION },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -104,6 +106,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "icon", href: publicAsset("/images/brand/favicon-48.png"), type: "image/png", sizes: "48x48" },
       { rel: "apple-touch-icon", href: publicAsset("/images/brand/apple-touch-icon.png"), sizes: "180x180" },
     ],
+    // Google Analytics 4 (loads asynchronously, live domain only).
+    scripts: [{ children: gaBootstrapScript }],
   }),
   shellComponent: RootShell,
   component: RootComponent,

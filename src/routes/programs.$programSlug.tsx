@@ -2,7 +2,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { ProgramDetail } from "@/components/program-detail";
 import { ButtonLink, Section } from "@/components/site";
 import { canonicalLinks, ogUrlMeta } from "@/lib/resources";
-import { breadcrumbSchema, jsonLd, programCourseSchema } from "@/lib/seo";
+import { breadcrumbSchema, jsonLd, pageTitle, programCourseSchema } from "@/lib/seo";
 import { findProgram } from "@/lib/programs";
 
 export const Route = createFileRoute("/programs/$programSlug")({
@@ -14,7 +14,7 @@ export const Route = createFileRoute("/programs/$programSlug")({
   head: ({ loaderData }) => ({
     meta: loaderData
       ? [
-          { title: `${loaderData.title} | Kaushal Hub` },
+          { title: pageTitle(loaderData.title) },
           { name: "description", content: loaderData.seoDescription },
           { property: "og:title", content: `${loaderData.title} | Kaushal Hub` },
           { property: "og:description", content: loaderData.seoDescription },

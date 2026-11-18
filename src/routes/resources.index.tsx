@@ -15,11 +15,11 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/resources/")({
   head: () => ({
     meta: [
-      { title: "Knowledge Library | Practical Business Resources — Kaushal Hub" },
+      { title: "Knowledge Library | Practical Business Guides — Kaushal Hub" },
       {
         name: "description",
         content:
-          "Explore practical guides to validating ideas, understanding customers and making better business decisions.",
+          "Explore practical guides from Kaushal Hub on validating ideas, understanding customers, pricing, pilots and making better business decisions.",
       },
       { property: "og:title", content: "The Kaushal Hub Knowledge Library" },
       {

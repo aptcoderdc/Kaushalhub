@@ -23,11 +23,11 @@ import { organisationLogos } from "@/lib/organisation-logos";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About Kaushal Hub — An initiative of SNN Eduworld" },
+      { title: "About Kaushal Hub | An Initiative of SNN Eduworld Pvt. Ltd." },
       {
         name: "description",
         content:
-          "An initiative of SNN Eduworld Pvt. Ltd., Kaushal Hub brings together practical learning, emerging technologies, entrepreneurship and a community built around knowledge and opportunity.",
+          "Kaushal Hub, an initiative of SNN Eduworld Pvt. Ltd., brings together practical learning, emerging technologies, entrepreneurship and a knowledge community.",
       },
       { property: "og:title", content: "About Kaushal Hub" },
       {

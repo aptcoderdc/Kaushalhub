@@ -14,6 +14,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as CommunityRouteImport } from './routes/community'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ExperienceToEnterpriseRouteImport } from './routes/experience-to-enterprise'
+import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
 import { Route as ProgramsRouteImport } from './routes/programs'
 import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
@@ -44,6 +45,11 @@ const ContactRoute = ContactRouteImport.update({
 const ExperienceToEnterpriseRoute = ExperienceToEnterpriseRouteImport.update({
   id: '/experience-to-enterprise',
   path: '/experience-to-enterprise',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LlmsDottxtRoute = LlmsDottxtRouteImport.update({
+  id: '/llms.txt',
+  path: '/llms.txt',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProgramsRoute = ProgramsRouteImport.update({
@@ -83,6 +89,7 @@ export interface FileRoutesByFullPath {
   '/community': typeof CommunityRoute
   '/contact': typeof ContactRoute
   '/experience-to-enterprise': typeof ExperienceToEnterpriseRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/programs': typeof ProgramsRouteWithChildren
   '/resources': typeof ResourcesRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -96,6 +103,7 @@ export interface FileRoutesByTo {
   '/community': typeof CommunityRoute
   '/contact': typeof ContactRoute
   '/experience-to-enterprise': typeof ExperienceToEnterpriseRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/programs': typeof ProgramsRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/programs/$programSlug': typeof ProgramsProgramSlugRoute
@@ -109,6 +117,7 @@ export interface FileRoutesById {
   '/community': typeof CommunityRoute
   '/contact': typeof ContactRoute
   '/experience-to-enterprise': typeof ExperienceToEnterpriseRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/programs': typeof ProgramsRouteWithChildren
   '/resources': typeof ResourcesRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -124,6 +133,7 @@ export interface FileRouteTypes {
     | '/community'
     | '/contact'
     | '/experience-to-enterprise'
+    | '/llms.txt'
     | '/programs'
     | '/resources'
     | '/sitemap.xml'
@@ -137,6 +147,7 @@ export interface FileRouteTypes {
     | '/community'
     | '/contact'
     | '/experience-to-enterprise'
+    | '/llms.txt'
     | '/programs'
     | '/sitemap.xml'
     | '/programs/$programSlug'
@@ -149,6 +160,7 @@ export interface FileRouteTypes {
     | '/community'
     | '/contact'
     | '/experience-to-enterprise'
+    | '/llms.txt'
     | '/programs'
     | '/resources'
     | '/sitemap.xml'
@@ -163,6 +175,7 @@ export interface RootRouteChildren {
   CommunityRoute: typeof CommunityRoute
   ContactRoute: typeof ContactRoute
   ExperienceToEnterpriseRoute: typeof ExperienceToEnterpriseRoute
+  LlmsDottxtRoute: typeof LlmsDottxtRoute
   ProgramsRoute: typeof ProgramsRouteWithChildren
   ResourcesRoute: typeof ResourcesRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -203,6 +216,13 @@ declare module '@tanstack/react-router' {
       path: '/experience-to-enterprise'
       fullPath: '/experience-to-enterprise'
       preLoaderRoute: typeof ExperienceToEnterpriseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/llms.txt': {
+      id: '/llms.txt'
+      path: '/llms.txt'
+      fullPath: '/llms.txt'
+      preLoaderRoute: typeof LlmsDottxtRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/programs': {
@@ -282,6 +302,7 @@ const rootRouteChildren: RootRouteChildren = {
   CommunityRoute: CommunityRoute,
   ContactRoute: ContactRoute,
   ExperienceToEnterpriseRoute: ExperienceToEnterpriseRoute,
+  LlmsDottxtRoute: LlmsDottxtRoute,
   ProgramsRoute: ProgramsRouteWithChildren,
   ResourcesRoute: ResourcesRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
