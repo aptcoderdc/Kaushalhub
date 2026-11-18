@@ -112,9 +112,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  // The SPA fallback shell (served as _shell.html / 404.html) has no page content of its
+  // own, so search engines must not index it. Real prerendered pages are unaffected.
+  // The client router doesn't know it was a shell render, so it keeps what the server sent.
+  const router = useRouter();
+  const isShell =
+    typeof document === "undefined"
+      ? router.isShell()
+      : document.head.querySelector('meta[name="robots"][content="noindex"]') !== null;
   return (
     <html lang="en">
       <head>
+        {isShell && <meta name="robots" content="noindex" />}
         <HeadContent />
       </head>
       <body>
