@@ -103,8 +103,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" },
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: publicAsset("/images/brand/favicon-48.png"), type: "image/png", sizes: "48x48" },
-      { rel: "apple-touch-icon", href: publicAsset("/images/brand/apple-touch-icon.png"), sizes: "180x180" },
+      // Brand mark favicons at stable root URLs (Google Search reads these for the result icon).
+      { rel: "icon", href: publicAsset("/favicon.ico"), sizes: "any" },
+      { rel: "icon", href: publicAsset("/favicon.svg"), type: "image/svg+xml" },
+      { rel: "icon", href: publicAsset("/favicon-48x48.png"), type: "image/png", sizes: "48x48" },
+      { rel: "apple-touch-icon", href: publicAsset("/apple-touch-icon.png"), sizes: "180x180" },
     ],
     // Google Analytics 4 (loads asynchronously, live domain only).
     scripts: [{ children: gaBootstrapScript }],
