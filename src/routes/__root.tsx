@@ -19,7 +19,6 @@ import { SITE_NAME, SOCIAL_IMAGE } from "../lib/seo";
 import { GOOGLE_SITE_VERIFICATION, gaBootstrapScript } from "../lib/analytics";
 import { WhatsAppContact } from "../components/whatsapp-contact";
 import { useScrollReveal } from "../hooks/use-scroll-reveal";
-import { InnovationSparkCursor } from "../components/innovation-spark-cursor";
 
 function NotFoundComponent() {
   return (
@@ -153,7 +152,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Navbar {...programCta} />
+      <Navbar />
       <main>
         {/* Keyed so each route's opening section plays its entrance once. */}
         <div key={pathname} className="kh-page">
@@ -163,8 +162,6 @@ function RootComponent() {
       <Footer />
       <StickyApply {...programCta} />
       <WhatsAppContact />
-      {/* "Innovation Spark" custom cursor, site-wide (mouse/trackpad only). */}
-      <InnovationSparkCursor />
     </QueryClientProvider>
   );
 }

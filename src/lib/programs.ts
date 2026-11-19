@@ -357,7 +357,8 @@ export const programs: Program[] = [
         ],
       },
     ],
-    faculty: facultyMembers,
+    // The shared faculty list does not teach this course, so its page has no faculty section.
+    faculty: [],
     finalNotice:
       "To ask about dates, registration or anything else about this program, get in touch with the Kaushal Hub team.",
   },

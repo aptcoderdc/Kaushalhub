@@ -86,15 +86,10 @@ const links = [
 ];
 const navLinkClass =
   "kh-nav-link rounded-sm text-[15px] text-ink outline-none transition-colors duration-300 hover:text-navy focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-4";
-export function Navbar({
-  ctaLabel = "Apply Now",
-  ctaTo = "/experience-to-enterprise",
-  ctaHash = "application",
-}: {
-  ctaLabel?: string;
-  ctaTo?: string;
-  ctaHash?: string;
-}) {
+/** Learner sign-in on the Edubate portal, shown as the header's primary button. */
+export const SIGN_IN_URL = "https://kaushalhub.edubate.in/";
+
+export function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const progressRef = useRef<HTMLDivElement>(null);
@@ -142,9 +137,9 @@ export function Navbar({
           ))}
         </nav>
         <div className="hidden md:block">
-          <ButtonLink to={ctaTo} hash={ctaHash}>
-            {ctaLabel}
-          </ButtonLink>
+          <a href={SIGN_IN_URL} className={buttonClass("primary")}>
+            Sign In
+          </a>
         </div>
         <SiteButton
           variant="text"
@@ -176,6 +171,15 @@ export function Navbar({
                 <ArrowRight className="h-4 w-4 text-slate transition-transform duration-300 ease-brand group-hover:translate-x-1" aria-hidden="true" />
               </Link>
             ))}
+            <a
+              href={SIGN_IN_URL}
+              onClick={() => setOpen(false)}
+              style={{ "--kh-delay": `${110 + (links.length - 1) * 50}ms` } as CSSProperties}
+              className="kh-drop-item group flex items-center justify-between py-4 font-semibold text-navy transition-colors hover:text-ink"
+            >
+              Sign In
+              <ArrowRight className="h-4 w-4 text-slate transition-transform duration-300 ease-brand group-hover:translate-x-1" aria-hidden="true" />
+            </a>
           </div>
         </nav>
       )}
@@ -576,13 +580,13 @@ export function Step({ n, title, text }: { n: number; title: string; text: strin
 
 /* ---------- Form field ---------- */
 const inputCls = "mt-2 w-full rounded-lg border border-border bg-card px-4 py-3 text-[16px] text-ink shadow-[inset_0_1px_2px_oklch(0.27_0.07_257/4%)] outline-none transition-[border-color,box-shadow] duration-300 ease-brand hover:border-navy/30 focus:border-navy focus:shadow-[0_0_0_4px_oklch(0.27_0.07_257/10%)]";
-export function Field({ label, name, type = "text", required, as, options, placeholder }: { label: string; name: string; type?: string; required?: boolean; as?: "textarea" | "select"; options?: string[]; placeholder?: string }) {
+export function Field({ label, name, type = "text", required, as, options, placeholder, min }: { label: string; name: string; type?: string; required?: boolean; as?: "textarea" | "select"; options?: string[]; placeholder?: string; min?: string }) {
   return (
     <label className="block">
       <span className="text-small font-medium text-ink">{label}{required && " *"}</span>
       {as === "textarea" ? <textarea name={name} required={required} rows={4} placeholder={placeholder} className={inputCls} />
         : as === "select" ? <select name={name} required={required} className={inputCls} defaultValue=""><option value="" disabled>Select</option>{options?.map((o) => <option key={o}>{o}</option>)}</select>
-        : <input name={name} type={type} required={required} placeholder={placeholder} className={inputCls} />}
+        : <input name={name} type={type} required={required} placeholder={placeholder} min={min} className={inputCls} />}
     </label>
   );
 }

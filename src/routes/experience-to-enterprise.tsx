@@ -164,9 +164,8 @@ const audience: [LucideIcon, string, string][] = [
 ];
 
 const fees = [
-  { step: 2, label: "Initial Interest Registration", amount: "₹99" },
-  { step: 5, label: "Program Registration", amount: "₹4,000" },
-  { step: 6, label: "Program Fee", amount: "₹80,000" },
+  { step: 2, label: "Initial Interest Registration", amount: "₹29" },
+  { step: 4, label: "Program Fee", amount: "₹80,000" },
 ];
 
 const faqs: [string, string][] = [
@@ -188,7 +187,7 @@ const faqs: [string, string][] = [
   ],
   [
     "What is the fee structure?",
-    "The ₹99 fee is for initial interest registration. The ₹4,000 program-registration fee is separate from the ₹80,000 program fee.",
+    "The ₹29 fee is for initial interest registration. The ₹80,000 program fee is payable only if you decide to proceed after your 1-to-1 counselling and assessment call.",
   ],
   [
     "Does the program guarantee incubation or funding?",
@@ -634,7 +633,7 @@ function FeesAndRegistration() {
       <SectionHeader
         eyebrow="Fees & registration"
         title="Program Fee and Registration Process"
-        sub="Begin by sharing your motivation and entrepreneurial interests. Learn more about the program through an introductory webinar and counselling before proceeding to program registration."
+        sub="Begin by sharing your background and entrepreneurial interests, then complete a ₹29 initial interest registration. You will then have a one-to-one counselling and assessment call with our team, so you can understand the program in detail before deciding whether to proceed with the program fee."
       />
       <div className="mt-10 grid gap-10 lg:grid-cols-12 lg:gap-14">
         {/* Fee summary */}
@@ -663,7 +662,7 @@ function FeesAndRegistration() {
             </div>
             <p className="mt-4 flex gap-3 rounded-xl border border-navy/15 bg-tint p-4 text-small font-semibold leading-6 text-navy">
               <Info className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
-              The ₹4,000 program-registration fee is separate from the ₹80,000 program fee.
+              The ₹80,000 program fee is payable only if you decide to proceed after your counselling and assessment call.
             </p>
           </div>
         </aside>
@@ -679,30 +678,23 @@ function FeesAndRegistration() {
               Go to application form
             </ButtonLink>
           </Stage>
-          <Stage n={2} title="Initial Interest Registration" amount="₹99">
+          <Stage n={2} title="Initial Interest Registration" amount="₹29">
             <p className="mt-2 leading-7 text-slate">
-              Complete the initial interest-registration step to proceed with the introductory process. This is the initial interest-registration fee.
+              Complete your initial interest registration by paying ₹29. This is the initial registration step.
             </p>
           </Stage>
-          <Stage n={3} title="Attend the Introductory Webinar">
+          <Stage n={3} title="1-to-1 Counselling & Assessment Call">
             <p className="mt-2 leading-7 text-slate">
-              Learn about the program structure, curriculum, expectations, and participation requirements before deciding whether to proceed.
+              After your initial registration, you will have a one-to-one counselling and assessment call with our team. We discuss your professional background, entrepreneurial interests and expectations, assess your alignment with the program, and help you understand Experience to Enterprise in greater detail.
             </p>
-            <p className="mt-2 text-small text-slate">The webinar date and joining details will be communicated to applicants.</p>
-          </Stage>
-          <Stage n={4} title="Program Counselling">
-            <p className="mt-2 leading-7 text-slate">
-              Discuss your interests, professional background, and expectations to better understand whether the program aligns with your goals.
-            </p>
-            <p className="mt-2 text-small text-slate">Counselling arrangements are subject to the program’s actual process.</p>
-          </Stage>
-          <Stage n={5} title="Program Registration" amount="₹4,000">
-            <p className="mt-2 leading-7 text-slate">
-              If you decide to proceed after the webinar and counselling, complete the separate program-registration step.
+            <p className="mt-2 text-small text-slate">
+              Choose your preferred date and time in the application form. Our team will confirm the final appointment with you.
             </p>
           </Stage>
-          <Stage n={6} title="Program Fee" amount="₹80,000" last>
-            <p className="mt-2 leading-7 text-slate">The program fee for the 12-week Experience to Enterprise certificate program.</p>
+          <Stage n={4} title="Program Fee" amount="₹80,000" last>
+            <p className="mt-2 leading-7 text-slate">
+              If you decide to proceed after the counselling and assessment process, complete the program fee payment. This is the total program fee for the 12-week Experience to Enterprise certificate program.
+            </p>
           </Stage>
         </ol>
       </div>
