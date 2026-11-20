@@ -128,7 +128,7 @@ export function Navbar() {
     >
       <div className="container-site flex h-16 items-center justify-between md:h-20">
         <Logo />
-        <nav aria-label="Main" className="hidden items-center gap-9 md:flex lg:gap-10">
+        <nav aria-label="Main" className="hidden items-center gap-6 md:flex lg:gap-10">
           <ProgramsMenu />
           {links.slice(1).map((l) => (
             <Link key={l.to} to={l.to} className={navLinkClass} activeProps={{ className: "font-semibold text-navy" }}>

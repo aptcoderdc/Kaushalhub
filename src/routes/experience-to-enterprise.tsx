@@ -520,7 +520,8 @@ function Curriculum() {
                       tabIndex={-1}
                       onClick={() => setOpen(i)}
                       style={{ flexGrow: span }}
-                      className={cn("h-2 basis-0 rounded-full transition-colors duration-300", open === i ? "bg-saffron" : "bg-tint hover:bg-navy/20")}
+                      // The invisible ::after strip gives the thin bar a finger-sized tap area on touch tablets.
+                      className={cn("relative h-2 basis-0 rounded-full transition-colors duration-300 after:absolute after:inset-x-0 after:-inset-y-2 after:content-['']", open === i ? "bg-saffron" : "bg-tint hover:bg-navy/20")}
                     />
                   );
                 })}

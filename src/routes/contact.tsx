@@ -15,6 +15,7 @@ import { Field, Section, buttonClass, cardSurface } from "@/components/site";
 import { cn } from "@/lib/utils";
 import { canonicalLinks, ogUrlMeta } from "@/lib/resources";
 import { breadcrumbSchema, jsonLd } from "@/lib/seo";
+import { socialProfileUrls } from "@/lib/social";
 
 const directionsUrl = "https://maps.app.goo.gl/PKSL1UK9TJZ1oJ5V9";
 
@@ -22,7 +23,7 @@ const socialProfiles = [
   { name: "Facebook", Icon: Facebook },
   { name: "LinkedIn", Icon: Linkedin },
   { name: "Instagram", Icon: Instagram },
-];
+].map((profile) => ({ ...profile, url: (socialProfileUrls as Partial<Record<string, string>>)[profile.name] }));
 
 export const Route = createFileRoute("/contact")({
   validateSearch: (search: Record<string, unknown>): { interest?: string } => {
@@ -120,20 +121,38 @@ function Contact() {
             <section className="kh-surface-navy relative overflow-hidden rounded-2xl bg-navy p-6 text-primary-foreground shadow-lift">
               <h2 className="font-serif text-[22px] leading-8 !text-primary-foreground">Connect with Kaushal Hub</h2>
               <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-3">
-                {socialProfiles.map(({ name, Icon }) => (
-                  <li key={name}>
-                    <span
-                      role="img"
-                      aria-label={`${name} profile link not available`}
-                      className="inline-flex items-center gap-2 text-small text-primary-foreground/80"
-                    >
-                      <span aria-hidden="true" className="grid h-9 w-9 place-items-center rounded-full bg-primary-foreground/10 ring-1 ring-primary-foreground/15">
-                        <Icon className="h-4 w-4 text-saffron" />
-                      </span>
-                      <span>{name}</span>
+                {socialProfiles.map(({ name, Icon, url }) => {
+                  const badge = (
+                    <span aria-hidden="true" className="grid h-9 w-9 place-items-center rounded-full bg-primary-foreground/10 ring-1 ring-primary-foreground/15 transition-colors duration-300 group-hover:bg-primary-foreground/20">
+                      <Icon className="h-4 w-4 text-saffron" />
                     </span>
-                  </li>
-                ))}
+                  );
+                  return (
+                    <li key={name}>
+                      {url ? (
+                        <a
+                          href={url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`Kaushal Hub on ${name} (opens in a new tab)`}
+                          className="group inline-flex items-center gap-2 rounded-full text-small text-primary-foreground transition-colors duration-300 hover:text-saffron focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-navy"
+                        >
+                          {badge}
+                          <span>{name}</span>
+                        </a>
+                      ) : (
+                        <span
+                          role="img"
+                          aria-label={`${name} profile link not available`}
+                          className="inline-flex items-center gap-2 text-small text-primary-foreground/80"
+                        >
+                          {badge}
+                          <span>{name}</span>
+                        </span>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             </section>
           </div>
