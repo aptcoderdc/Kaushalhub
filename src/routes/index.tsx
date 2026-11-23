@@ -237,7 +237,7 @@ function HomeKnowledgeLibrary() {
                 <span className="rounded-full bg-navy px-3 py-1 text-[11px] font-semibold tracking-[0.1em] text-primary-foreground">{categoryLabels[lead.slug]}</span>
                 <span className="text-[11px] font-medium tracking-[0.06em] text-slate">{lead.readingTime.toUpperCase()}</span>
               </div>
-              <h3 className="mt-6 max-w-xl font-serif text-[28px] leading-9 text-navy md:text-[34px] md:leading-[42px]">{lead.title}</h3>
+              <h3 className="mt-6 max-w-xl font-serif text-[24px] leading-8 text-navy sm:text-[28px] sm:leading-9 md:text-[34px] md:leading-[42px]">{lead.title}</h3>
               <p className="mt-4 max-w-xl text-slate">{lead.summary}</p>
             </div>
             <span className="relative mt-10 inline-flex items-center gap-2 text-small font-semibold text-navy">

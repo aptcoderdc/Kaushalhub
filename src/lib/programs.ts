@@ -36,6 +36,14 @@ export type Program = {
   /** Faculty shown in the "Meet Your Faculty" section; leave empty to hide it. */
   faculty: FacultyMember[];
   finalNotice: string;
+  /** The course's own hero image; programs without one show the FITT, IIT Delhi campus. */
+  heroImage?: { src: string; alt: string; width: number; height: number };
+  /**
+   * Phone-specific layout for this page: image straight after the heading, compact facts,
+   * list-style audience and outcomes, and a timeline without the side rail. Tablet and
+   * desktop are unaffected.
+   */
+  compactMobile?: boolean;
 };
 
 export const programs: Program[] = [
@@ -291,7 +299,7 @@ export const programs: Program[] = [
               "Explore how Generative AI works, where it can be useful and how to use AI tools thoughtfully.",
           },
           {
-            title: "B.Tech Students — Third and Fourth Year",
+            title: "B.Tech Students",
             description:
               "Understand how AI tools can support software development, prototyping and the development lifecycle.",
           },
@@ -353,12 +361,19 @@ export const programs: Program[] = [
           "One-day program",
           "In-person format",
           "IIT Delhi",
-          "Intended for Class 12 students, third- and fourth-year B.Tech students, and entrepreneurs",
+          "Intended for Class 12 students, B.Tech students and entrepreneurs",
         ],
       },
     ],
     // The shared faculty list does not teach this course, so its page has no faculty section.
     faculty: [],
+    heroImage: {
+      src: "/images/AI_thumb.png",
+      alt: "FITT, IIT Delhi building with the FITT and Microsoft logos",
+      width: 960,
+      height: 717,
+    },
+    compactMobile: true,
     finalNotice:
       "To ask about dates, registration or anything else about this program, get in touch with the Kaushal Hub team.",
   },

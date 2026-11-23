@@ -1,12 +1,13 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode, type ComponentProps } from "react";
-import { ChevronDown, Menu, X, Check, ArrowRight, ArrowUpRight, Facebook, Instagram, Linkedin, Youtube } from "lucide-react";
+import { ChevronDown, Menu, X, Check, ArrowRight, ArrowUpRight, Facebook, Instagram, Linkedin, Sparkles, Youtube } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { publicAsset } from "@/lib/public-asset";
 import { brandLogos } from "@/lib/brand";
 import { socialProfileUrls } from "@/lib/social";
-import type { Program } from "@/lib/programs";
+import { findProgram, type Program } from "@/lib/programs";
 import { featuredProgram, supportingPrograms } from "@/lib/program-nav";
+import { WhatsAppIcon, whatsappUrl } from "@/components/whatsapp-contact";
 
 /* ---------- Button ---------- */
 type Variant = "primary" | "secondary" | "inverse" | "text";
@@ -86,8 +87,12 @@ const links = [
 ];
 const navLinkClass =
   "kh-nav-link rounded-sm text-[15px] text-ink outline-none transition-colors duration-300 hover:text-navy focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-4";
-/** Learner sign-in on the Edubate portal, shown as the header's primary button. */
+/** Learner sign-in on the Edubate portal, shown as the header's primary button. Opens in a new tab. */
 export const SIGN_IN_URL = "https://kaushalhub.edubate.in/";
+const externalTab = { target: "_blank", rel: "noopener noreferrer" } as const;
+
+/** The Microsoft AI course, highlighted at the end of the main navigation. */
+const highlightedCourse = { to: findProgram("generative-ai-in-action")?.path ?? "/programs", label: "Microsoft AI Course" };
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
@@ -128,22 +133,32 @@ export function Navbar() {
     >
       <div className="container-site flex h-16 items-center justify-between md:h-20">
         <Logo />
-        <nav aria-label="Main" className="hidden items-center gap-6 md:flex lg:gap-10">
+        {/* Full navigation needs laptop width; tablets and phones use the menu below. */}
+        <nav aria-label="Main" className="hidden items-center gap-7 lg:flex xl:gap-10">
           <ProgramsMenu />
           {links.slice(1).map((l) => (
             <Link key={l.to} to={l.to} className={navLinkClass} activeProps={{ className: "font-semibold text-navy" }}>
               {l.label}
             </Link>
           ))}
+          <Link
+            to={highlightedCourse.to}
+            className="inline-flex items-center gap-1.5 rounded-full border border-saffron/45 bg-saffron/10 px-3.5 py-1.5 text-[15px] font-medium text-navy outline-none transition-[background-color,border-color,box-shadow] duration-300 ease-brand hover:border-saffron hover:bg-saffron/15 hover:shadow-[0_6px_16px_-10px_oklch(0.72_0.15_62/70%)] focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-4"
+            activeProps={{ className: "border-saffron bg-saffron/20 font-semibold" }}
+          >
+            <Sparkles className="h-3.5 w-3.5 text-saffron" aria-hidden="true" />
+            {highlightedCourse.label}
+          </Link>
         </nav>
+        <div className="flex items-center gap-2">
         <div className="hidden md:block">
-          <a href={SIGN_IN_URL} className={buttonClass("primary")}>
-            Sign In
+          <a href={SIGN_IN_URL} {...externalTab} className={buttonClass("primary")}>
+            Sign In<span className="sr-only"> (opens in a new tab)</span>
           </a>
         </div>
         <SiteButton
           variant="text"
-          className="h-11 w-11 rounded-lg p-2 hover:bg-tint md:hidden"
+          className="h-11 w-11 rounded-lg p-2 hover:bg-tint lg:hidden"
           aria-label="Menu"
           aria-expanded={open}
           aria-controls="mobile-menu"
@@ -153,9 +168,10 @@ export function Navbar() {
             {open ? <X /> : <Menu />}
           </span>
         </SiteButton>
+        </div>
       </div>
       {open && (
-        <nav id="mobile-menu" aria-label="Mobile" className="kh-drop max-h-[calc(100dvh-4rem)] overflow-y-auto border-t bg-background/95 shadow-[0_24px_40px_-24px_oklch(0.27_0.07_257/40%)] md:hidden">
+        <nav id="mobile-menu" aria-label="Mobile" className="kh-drop max-h-[calc(100dvh-4rem)] overflow-y-auto border-t bg-background/95 shadow-[0_24px_40px_-24px_oklch(0.27_0.07_257/40%)] md:max-h-[calc(100dvh-5rem)] lg:hidden">
           <div className="container-site flex flex-col py-3">
             <MobileProgramsAccordion onNavigate={() => setOpen(false)} />
             {links.slice(1).map((l, i) => (
@@ -171,13 +187,27 @@ export function Navbar() {
                 <ArrowRight className="h-4 w-4 text-slate transition-transform duration-300 ease-brand group-hover:translate-x-1" aria-hidden="true" />
               </Link>
             ))}
-            <a
-              href={SIGN_IN_URL}
+            <Link
+              to={highlightedCourse.to}
               onClick={() => setOpen(false)}
               style={{ "--kh-delay": `${110 + (links.length - 1) * 50}ms` } as CSSProperties}
+              className="kh-drop-item group my-2 flex items-center justify-between rounded-xl border border-saffron/45 bg-saffron/10 px-4 py-3.5 font-medium text-navy transition-colors hover:bg-saffron/15"
+              activeProps={{ className: "font-semibold" }}
+            >
+              <span className="inline-flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-saffron" aria-hidden="true" />
+                {highlightedCourse.label}
+              </span>
+              <ArrowRight className="h-4 w-4 text-navy transition-transform duration-300 ease-brand group-hover:translate-x-1" aria-hidden="true" />
+            </Link>
+            <a
+              href={SIGN_IN_URL}
+              {...externalTab}
+              onClick={() => setOpen(false)}
+              style={{ "--kh-delay": `${110 + links.length * 50}ms` } as CSSProperties}
               className="kh-drop-item group flex items-center justify-between py-4 font-semibold text-navy transition-colors hover:text-ink"
             >
-              Sign In
+              <span>Sign In<span className="sr-only"> (opens in a new tab)</span></span>
               <ArrowRight className="h-4 w-4 text-slate transition-transform duration-300 ease-brand group-hover:translate-x-1" aria-hidden="true" />
             </a>
           </div>
@@ -379,11 +409,39 @@ export function StickyApply({
   ctaTo?: string;
   ctaHash?: string;
 }) {
+  // While the application form itself is on screen the bar would only repeat it and cover the
+  // submit button, so it slides away there.
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const [formInView, setFormInView] = useState(false);
+  useEffect(() => {
+    setFormInView(false);
+    const form = document.getElementById(ctaHash);
+    if (!form || !("IntersectionObserver" in window)) return;
+    const observer = new IntersectionObserver(([entry]) => setFormInView(Boolean(entry?.isIntersecting)), { rootMargin: "0px 0px -25% 0px" });
+    observer.observe(form);
+    return () => observer.disconnect();
+  }, [pathname, ctaHash]);
+
   return (
-    <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border/70 bg-background/85 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] shadow-[0_-12px_30px_-20px_oklch(0.27_0.07_257/35%)] backdrop-blur-xl backdrop-saturate-150 md:hidden">
-      <ButtonLink to={ctaTo} hash={ctaHash} className="w-full">
+    <div
+      inert={formInView}
+      className={cn(
+        "fixed inset-x-0 bottom-0 z-30 flex gap-3 border-t border-border/70 bg-background/85 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] shadow-[0_-12px_30px_-20px_oklch(0.27_0.07_257/35%)] backdrop-blur-xl backdrop-saturate-150 transition-transform duration-300 ease-brand motion-reduce:transition-none md:hidden",
+        formInView && "translate-y-full",
+      )}
+    >
+      <ButtonLink to={ctaTo} hash={ctaHash} className="min-w-0 flex-1">
         {ctaLabel}
       </ButtonLink>
+      <a
+        href={whatsappUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Contact Kaushal Hub on WhatsApp"
+        className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-[#25D366] text-white shadow-[0_3px_12px_rgba(15,39,71,0.18)] transition-transform active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2"
+      >
+        <WhatsAppIcon className="size-7" />
+      </a>
     </div>
   );
 }
@@ -393,8 +451,8 @@ export function Footer() {
   const col = (title: string, items: { label: string; to: string; hash?: string }[]) => (
     <div>
       <p className="eyebrow !text-primary-foreground/60">{title}</p>
-      <ul className="mt-4 space-y-2 text-[15px]">
-        {items.map(({ label, to, hash }) => <li key={label}><Link to={to} {...(hash ? { hash } : {})} className="inline-block rounded-sm text-primary-foreground/85 outline-none transition-[color,transform] duration-300 ease-brand hover:translate-x-1 hover:text-primary-foreground focus-visible:ring-2 focus-visible:ring-primary-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-brand-deep motion-reduce:hover:translate-x-0">{label}</Link></li>)}
+      <ul className="mt-2 text-[15px] md:mt-4 md:space-y-2">
+        {items.map(({ label, to, hash }) => <li key={label}><Link to={to} {...(hash ? { hash } : {})} className="inline-block rounded-sm py-2 md:py-0 text-primary-foreground/85 outline-none transition-[color,transform] duration-300 ease-brand hover:translate-x-1 hover:text-primary-foreground focus-visible:ring-2 focus-visible:ring-primary-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-brand-deep motion-reduce:hover:translate-x-0">{label}</Link></li>)}
       </ul>
     </div>
   );
@@ -407,8 +465,9 @@ export function Footer() {
   return (
     <footer className="bg-brand-deep pb-24 pt-12 text-primary-foreground md:pb-8 md:pt-14">
       <div className="container-site">
-        <div className="grid gap-x-8 gap-y-10 sm:grid-cols-2 xl:grid-cols-4">
-          <div className="min-w-0">
+        {/* Phones: Explore and About sit side by side; the brand and contact blocks span both columns. */}
+        <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:gap-x-8 xl:grid-cols-4">
+          <div className="col-span-2 min-w-0 sm:col-span-1">
             <Logo light />
             <p className="mt-4 max-w-sm text-[15px] leading-6 text-primary-foreground/75">An initiative of SNN Eduworld Pvt. Ltd., connecting people with practical learning, useful knowledge and new opportunities.</p>
           </div>
@@ -426,7 +485,7 @@ export function Footer() {
               { label: "Contact Us", to: "/contact" },
             ])}
           </div>
-          <div className="min-w-0">
+          <div className="col-span-2 min-w-0 sm:col-span-1">
             <p className="eyebrow !text-primary-foreground/60">Get in Touch</p>
             <address className="mt-4 not-italic text-[15px] leading-6 text-primary-foreground/85">
               <span className="block font-medium text-primary-foreground">Kaushal Hub</span>
@@ -440,7 +499,7 @@ export function Footer() {
             </a>
             <div className="mt-4">
               <p className="text-small font-medium text-primary-foreground/75">Social</p>
-              <ul className="mt-2 flex items-center gap-4">
+              <ul className="mt-1 flex items-center gap-2 md:mt-2 md:gap-4">
                 {socialProfiles.map(({ name, Icon, url }) => (
                   <li key={name}>
                     {url ? (
@@ -449,12 +508,12 @@ export function Footer() {
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={`Kaushal Hub on ${name} (opens in a new tab)`}
-                        className="inline-flex h-8 w-8 items-center justify-center rounded-sm text-primary-foreground/70 transition-colors hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-brand-deep"
+                        className="inline-flex h-11 w-11 items-center justify-center rounded-sm text-primary-foreground/70 transition-colors md:h-8 md:w-8 hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-brand-deep"
                       >
                         <Icon className="h-5 w-5" aria-hidden="true" />
                       </a>
                     ) : (
-                    <span role="img" aria-label={`${name}: no verified profile available`} className="inline-flex h-8 w-8 items-center justify-center text-primary-foreground/70">
+                    <span role="img" aria-label={`${name}: no verified profile available`} className="inline-flex h-11 w-11 items-center md:h-8 md:w-8 justify-center text-primary-foreground/70">
                       <Icon className="h-5 w-5" aria-hidden="true" />
                     </span>
                     )}

@@ -26,6 +26,8 @@ import { publicAsset } from "@/lib/public-asset";
 import { cn } from "@/lib/utils";
 
 const CAMPUS_IMAGE = publicAsset("/images/fitt-iit-delhi-campus.webp");
+/** Facts up to this many characters count as "short" for the compact phone layout. */
+const SHORT_FACT = 14;
 
 /** Background used by each content section, so the faculty section can avoid matching its neighbour. */
 const sectionTone: Record<ProgramSection["kind"], "tint" | "white" | "default"> = {
@@ -58,6 +60,11 @@ export function ProgramDetail({ program }: { program: Program }) {
   const facultyIndex = audienceIndex === -1 ? program.sections.length : audienceIndex + 1;
   const nextSection = program.sections[facultyIndex];
   const eligibility = program.details.find((detail) => detail.label === "Eligibility")?.value;
+  const compact = Boolean(program.compactMobile);
+  const heroImage = program.heroImage;
+  // Short facts sit two (or three) to a row on compact phones; longer ones take a full row.
+  const shortFacts = program.details.filter((detail) => detail.value.length <= SHORT_FACT).length;
+  const shortFactSpan = shortFacts % 3 === 0 ? "col-span-2" : "col-span-3";
 
   return (
     <>
@@ -76,54 +83,73 @@ export function ProgramDetail({ program }: { program: Program }) {
             All Programs
           </Link>
 
-          <div className="mt-6 grid items-center gap-10 lg:grid-cols-12 lg:gap-14">
-            <div className="lg:col-span-7">
+          {/* Compact pages flatten the text column on phones so the image can sit right after the heading. */}
+          <div className={cn("mt-6 grid items-center lg:grid-cols-12 lg:gap-14", compact ? "gap-0 sm:gap-10" : "gap-10")}>
+            <div className={cn("lg:col-span-7", compact && "max-sm:contents")}>
               {eligibility && (
                 <p className="kh-rise inline-flex items-center gap-2 rounded-full border border-saffron/30 bg-card px-3 py-1 text-[13px] font-semibold text-saffron-ink shadow-card [--kh-delay:40ms]">
                   <Users className="h-3.5 w-3.5" aria-hidden="true" />
                   {eligibility}
                 </p>
               )}
-              <h1 className="h1 kh-rise mt-5 text-balance [--kh-delay:90ms]">{program.title}</h1>
-              <p className="kh-rise mt-5 font-serif text-[22px] leading-8 text-navy [--kh-delay:150ms] md:text-[26px] md:leading-9">
+              <h1 className={cn("h1 kh-rise mt-5 text-balance [--kh-delay:90ms]", compact && "max-sm:mt-4 max-sm:text-[32px] max-sm:leading-[38px]")}>{program.title}</h1>
+              <p className={cn("kh-rise mt-5 font-serif text-[22px] leading-8 text-navy [--kh-delay:150ms] md:text-[26px] md:leading-9", compact && "max-sm:mt-3 max-sm:text-[19px] max-sm:leading-7")}>
                 <span className="kh-accent">{program.subtitle}</span>
               </p>
-              <p className="kh-rise mt-5 max-w-2xl text-slate [--kh-delay:210ms]">{program.pageDescription ?? program.description}</p>
-              <p role="status" className="kh-rise mt-6 flex items-start gap-2 text-small font-medium text-navy [--kh-delay:260ms]">
+              <p className={cn("kh-rise mt-5 max-w-2xl text-slate [--kh-delay:210ms]", compact && "max-sm:order-2 max-sm:mt-6")}>{program.pageDescription ?? program.description}</p>
+              <p role="status" className={cn("kh-rise mt-6 flex items-start gap-2 text-small font-medium text-navy [--kh-delay:260ms]", compact && "max-sm:order-2 max-sm:mt-4")}>
                 <Info className="mt-0.5 h-4 w-4 shrink-0 text-saffron-ink" aria-hidden="true" />
                 {program.heroNotice}
               </p>
-              <div className="kh-rise mt-8 flex flex-col gap-3 [--kh-delay:320ms] sm:flex-row">
+              <div className={cn("kh-rise mt-8 flex flex-col gap-3 [--kh-delay:320ms] sm:flex-row", compact && "max-sm:order-2 max-sm:mt-6")}>
                 <ButtonLink to="/contact">Get in Touch</ButtonLink>
                 <ButtonLink to="/programs" variant="secondary">Explore all programs</ButtonLink>
               </div>
             </div>
-            <figure className="kh-rise-card relative [--kh-delay:220ms] lg:col-span-5">
+            <figure className={cn("kh-rise-card relative [--kh-delay:220ms] lg:col-span-5", compact && "max-sm:order-1 max-sm:mt-6")}>
               <div aria-hidden="true" className="absolute -bottom-3 -right-3 hidden h-full w-full rounded-3xl border border-saffron/40 bg-saffron/10 sm:block" />
-              <img
-                src={CAMPUS_IMAGE}
-                alt="The Foundation for Innovation and Technology Transfer building at IIT Delhi"
-                width={1474}
-                height={1100}
-                className="relative aspect-[4/3] w-full rounded-3xl object-cover object-left-bottom shadow-float"
-              />
+              {heroImage ? (
+                // Shown at its own 960×717 ratio so the logos along the bottom are never cropped.
+                <img
+                  src={publicAsset(heroImage.src)}
+                  alt={heroImage.alt}
+                  width={heroImage.width}
+                  height={heroImage.height}
+                  fetchPriority="high"
+                  decoding="async"
+                  style={{ aspectRatio: `${heroImage.width} / ${heroImage.height}` }}
+                  className="relative w-full rounded-2xl object-cover shadow-float sm:rounded-3xl"
+                />
+              ) : (
+                <img
+                  src={CAMPUS_IMAGE}
+                  alt="The Foundation for Innovation and Technology Transfer building at IIT Delhi"
+                  width={1474}
+                  height={1100}
+                  className="relative aspect-[4/3] w-full rounded-3xl object-cover object-left-bottom shadow-float"
+                />
+              )}
             </figure>
           </div>
 
           {/* Program facts */}
           <dl
             className={cn(
-              "kh-rise mt-12 grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-border/80 bg-border/70 shadow-lift [--kh-delay:380ms] sm:grid-cols-2",
+              "kh-rise mt-12 grid gap-px overflow-hidden rounded-2xl border border-border/80 bg-border/70 shadow-lift [--kh-delay:380ms] sm:grid-cols-2",
+              // Compact phones: short facts share a row as small tiles, long ones get the full width.
+              compact ? "max-sm:mt-8 grid-cols-6" : "grid-cols-1",
               program.details.length >= 5 ? "lg:grid-cols-5" : program.details.length === 4 ? "lg:grid-cols-4" : "lg:grid-cols-3",
             )}
           >
             {program.details.map(({ label, value }, i) => {
               const Icon = detailIcons[label] ?? Info;
+              const short = value.length <= SHORT_FACT;
               return (
                 <div
                   key={label}
                   className={cn(
                     "flex gap-3 bg-card p-5 transition-colors duration-300 hover:bg-[color-mix(in_oklch,var(--color-tint)_45%,var(--color-card))]",
+                    compact && cn(short ? cn(shortFactSpan, "max-sm:flex-col max-sm:gap-2 max-sm:p-4") : "col-span-6 max-sm:p-4", "sm:col-span-1"),
                     i === program.details.length - 1 && program.details.length % 2 === 1 && "sm:col-span-2 lg:col-span-1",
                   )}
                 >
@@ -140,7 +166,7 @@ export function ProgramDetail({ program }: { program: Program }) {
       </section>
 
       {program.sections.slice(0, facultyIndex).map((section, index) => (
-        <ProgramContentSection key={`${section.kind}-${index}`} section={section} />
+        <ProgramContentSection key={`${section.kind}-${index}`} section={section} compact={compact} />
       ))}
 
       {nextSection && sectionTone[nextSection.kind] === "tint" ? (
@@ -150,7 +176,7 @@ export function ProgramDetail({ program }: { program: Program }) {
       )}
 
       {program.sections.slice(facultyIndex).map((section, index) => (
-        <ProgramContentSection key={`${section.kind}-${facultyIndex + index}`} section={section} />
+        <ProgramContentSection key={`${section.kind}-${facultyIndex + index}`} section={section} compact={compact} />
       ))}
 
       {/* Closing */}
@@ -181,7 +207,14 @@ function IconTile({ icon: Icon, className }: { icon: LucideIcon; className?: str
   );
 }
 
-function ProgramContentSection({ section }: { section: ProgramSection }) {
+/** Tighter vertical rhythm between sections on compact phones (64px → 48px). */
+const compactPad = "max-sm:py-12";
+/** Compact phones: a set of cards becomes one card with divided rows, which is quicker to scan. */
+const compactList = "max-sm:mt-8 max-sm:gap-0 max-sm:overflow-hidden max-sm:rounded-2xl max-sm:border max-sm:border-border/80 max-sm:bg-card max-sm:shadow-card";
+// Each row keeps only its top hairline (none on the first) as the divider.
+const compactListItem = "max-sm:rounded-none max-sm:border-x-0 max-sm:border-b-0 max-sm:border-border/70 max-sm:first:border-t-0 max-sm:shadow-none max-sm:hover:translate-y-0 max-sm:hover:shadow-none";
+
+function ProgramContentSection({ section, compact }: { section: ProgramSection; compact?: boolean }) {
   if (section.kind === "learning") {
     return (
       <Section white>
@@ -256,7 +289,7 @@ function ProgramContentSection({ section }: { section: ProgramSection }) {
 
   if (section.kind === "audience") {
     return (
-      <Section>
+      <Section className={cn(compact && compactPad)}>
         <SectionHeader eyebrow="Audience" title={section.title} />
         {section.body && !section.groups && (
           <div className="relative mt-8 max-w-4xl overflow-hidden rounded-2xl border border-border/80 bg-card p-7 shadow-card md:p-9">
@@ -269,12 +302,14 @@ function ProgramContentSection({ section }: { section: ProgramSection }) {
         )}
         {section.body && section.groups && <p className="mt-5 max-w-3xl text-slate">{section.body}</p>}
         {section.groups && (
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className={cn("mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3", compact && compactList)}>
             {section.groups.map((group, i) => (
-              <article key={group.title} className={cn(cardSurface, "group p-6 hover:-translate-y-1 motion-reduce:hover:translate-y-0 md:p-7")}>
-                <IconTile icon={audienceIcons[i % audienceIcons.length] ?? Users} />
-                <h3 className="h4 mt-5 font-serif text-navy">{group.title}</h3>
-                <p className="mt-2 text-[15px] leading-6 text-slate">{group.description}</p>
+              <article key={group.title} className={cn(cardSurface, "group p-6 hover:-translate-y-1 motion-reduce:hover:translate-y-0 md:p-7", compact && cn(compactListItem, "max-sm:flex max-sm:gap-4 max-sm:p-5"))}>
+                <IconTile icon={audienceIcons[i % audienceIcons.length] ?? Users} className={cn(compact && "max-sm:h-10 max-sm:w-10")} />
+                <div>
+                  <h3 className={cn("h4 mt-5 font-serif text-navy", compact && "max-sm:mt-0.5")}>{group.title}</h3>
+                  <p className="mt-2 text-[15px] leading-6 text-slate">{group.description}</p>
+                </div>
               </article>
             ))}
           </div>
@@ -285,17 +320,21 @@ function ProgramContentSection({ section }: { section: ProgramSection }) {
 
   if (section.kind === "structure") {
     return (
-      <Section tint>
+      <Section tint className={cn(compact && compactPad)}>
         <SectionHeader eyebrow="Program structure" title={section.title} />
-        <ol className="relative mt-10 max-w-5xl">
-          <span aria-hidden="true" className="absolute bottom-6 left-[1.35rem] top-6 w-0.5 bg-gradient-to-b from-navy via-navy/30 to-saffron" />
+        <ol className={cn("relative mt-10 max-w-5xl", compact && "max-sm:mt-8")}>
+          {/* Compact phones drop the side rail so each card gets the full width; the number moves inside the card. */}
+          <span aria-hidden="true" className={cn("absolute bottom-6 left-[1.35rem] top-6 w-0.5 bg-gradient-to-b from-navy via-navy/30 to-saffron", compact && "max-sm:hidden")} />
           {section.items.map((item, index) => (
-            <li key={item.title} className="group relative pb-5 pl-16 last:pb-0">
-              <span className="absolute left-0 top-0 grid h-11 w-11 place-items-center rounded-full border-2 border-navy bg-card font-serif text-[16px] text-navy shadow-card transition-colors duration-300 group-hover:bg-navy group-hover:text-primary-foreground">
+            <li key={item.title} className={cn("group relative pb-5 pl-16 last:pb-0", compact && "max-sm:pb-3 max-sm:pl-0")}>
+              <span className={cn("absolute left-0 top-0 grid h-11 w-11 place-items-center rounded-full border-2 border-navy bg-card font-serif text-[16px] text-navy shadow-card transition-colors duration-300 group-hover:bg-navy group-hover:text-primary-foreground", compact && "max-sm:hidden")}>
                 {String(index + 1).padStart(2, "0")}
               </span>
-              <div className={cn(cardSurface, "grid gap-2 p-5 md:grid-cols-12 md:gap-6 md:p-6")}>
-                <h3 className="h4 font-serif text-navy md:col-span-4 md:self-start">{item.title}</h3>
+              <div className={cn(cardSurface, "grid gap-2 p-5 md:grid-cols-12 md:gap-6 md:p-6", compact && "max-sm:border-l-[3px] max-sm:border-l-saffron/70")}>
+                <h3 className="h4 font-serif text-navy md:col-span-4 md:self-start">
+                  {compact && <span aria-hidden="true" className="mr-2 font-serif text-[15px] text-saffron-ink sm:hidden">{String(index + 1).padStart(2, "0")}</span>}
+                  {item.title}
+                </h3>
                 <p className="text-[15px] leading-6 text-slate md:col-span-8">{item.description}</p>
               </div>
             </li>
@@ -307,11 +346,11 @@ function ProgramContentSection({ section }: { section: ProgramSection }) {
 
   if (section.kind === "outcomes") {
     return (
-      <Section white>
+      <Section white className={cn(compact && compactPad)}>
         <SectionHeader eyebrow="Outcomes" title={section.title} />
-        <ul className="mt-10 grid gap-4 sm:grid-cols-2">
+        <ul className={cn("mt-10 grid gap-4 sm:grid-cols-2", compact && compactList)}>
           {section.items.map((item) => (
-            <li key={item} className={cn(cardSurface, "group flex items-start gap-4 p-5")}>
+            <li key={item} className={cn(cardSurface, "group flex items-start gap-4 p-5", compact && cn(compactListItem, "max-sm:gap-3 max-sm:px-5 max-sm:py-4"))}>
               <span aria-hidden="true" className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-saffron/15 text-saffron-ink transition-colors duration-300 group-hover:bg-saffron group-hover:text-navy">
                 <Check className="h-4 w-4" strokeWidth={2.5} />
               </span>
@@ -324,7 +363,7 @@ function ProgramContentSection({ section }: { section: ProgramSection }) {
   }
 
   return (
-    <Section>
+    <Section className={cn(compact && compactPad)}>
       <div className="grid items-start gap-8 lg:grid-cols-12 lg:gap-12">
         <div className="lg:col-span-5">
           <p className="eyebrow">Venue</p>
@@ -333,7 +372,7 @@ function ProgramContentSection({ section }: { section: ProgramSection }) {
         </div>
         <ul className={cn(cardSurface, "divide-y divide-border/70 lg:col-span-7")}>
           {section.details.map((detail) => (
-            <li key={detail} className="flex items-start gap-4 p-5">
+            <li key={detail} className={cn("flex items-start gap-4 p-5", compact && "max-sm:gap-3 max-sm:px-4 max-sm:py-3.5")}>
               <span aria-hidden="true" className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-tint text-navy">
                 <MapPin className="h-[18px] w-[18px]" strokeWidth={1.75} />
               </span>

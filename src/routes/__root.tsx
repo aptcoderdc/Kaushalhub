@@ -149,6 +149,12 @@ function RootComponent() {
     ctaTo: "/experience-to-enterprise",
     ctaHash: "application",
   };
+  // The Microsoft AI course has no application form of its own, so its phone bar offers an
+  // enquiry instead of pointing visitors to the Experience to Enterprise application.
+  const stickyCta =
+    pathname.replace(/\/$/, "") === "/programs/generative-ai-in-action"
+      ? { ctaLabel: "Get in Touch", ctaTo: "/contact", ctaHash: "" }
+      : programCta;
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -160,7 +166,7 @@ function RootComponent() {
         </div>
       </main>
       <Footer />
-      <StickyApply {...programCta} />
+      <StickyApply {...stickyCta} />
       <WhatsAppContact />
     </QueryClientProvider>
   );

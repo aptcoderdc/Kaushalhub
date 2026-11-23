@@ -145,7 +145,7 @@ function About() {
             </p>
           </div>
           <div className="lg:col-span-5">
-            <div className="kh-surface-navy relative overflow-hidden rounded-3xl bg-navy p-8 shadow-float md:p-10">
+            <div className="kh-surface-navy relative overflow-hidden rounded-3xl bg-navy p-6 shadow-float sm:p-8 md:p-10">
               <Quote aria-hidden="true" className="h-9 w-9 text-saffron" strokeWidth={1.25} />
               <p
                 lang="hi"
@@ -222,10 +222,10 @@ function About() {
       <Section white>
         <p className="eyebrow text-center">OUR VISION &amp; MISSION</p>
         <div className="mx-auto mt-10 grid max-w-6xl gap-5 lg:grid-cols-2">
-          <div className="kh-surface-navy relative overflow-hidden rounded-3xl bg-navy p-8 shadow-float md:p-10">
+          <div className="kh-surface-navy relative overflow-hidden rounded-3xl bg-navy p-6 shadow-float sm:p-8 md:p-10">
             <Eye aria-hidden="true" className="h-9 w-9 text-saffron" strokeWidth={1.25} />
             <p className="eyebrow mt-6 !text-saffron">VISION</p>
-            <h2 className="mt-3 text-balance font-serif text-[28px] leading-9 !text-primary-foreground md:text-[34px] md:leading-[44px]">
+            <h2 className="mt-3 text-balance font-serif text-[24px] leading-8 !text-primary-foreground sm:text-[28px] sm:leading-9 md:text-[34px] md:leading-[44px]">
               A world where useful knowledge leads to meaningful action.
             </h2>
           </div>

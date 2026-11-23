@@ -599,7 +599,7 @@ function WhoItsFor() {
           <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
             <div className="lg:col-span-5">
               <p className="eyebrow mb-4 !text-saffron">Who it’s for</p>
-              <h2 className="font-serif text-[28px] leading-9 !text-primary-foreground md:text-[34px] md:leading-[42px]">
+              <h2 className="font-serif text-[24px] leading-8 !text-primary-foreground sm:text-[28px] sm:leading-9 md:text-[34px] md:leading-[42px]">
                 Experienced professionals exploring entrepreneurship while still working.
               </h2>
               <p className="mt-4 text-primary-foreground/75">Typically aged 30–50, with industry knowledge, networks and credibility.</p>
