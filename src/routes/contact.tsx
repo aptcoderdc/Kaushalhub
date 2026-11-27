@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useRef } from "react";
 import {
   ArrowUpRight,
+  Check,
   Facebook,
   Instagram,
   Linkedin,
@@ -15,6 +16,8 @@ import { Field, Section, buttonClass, cardSurface } from "@/components/site";
 import { cn } from "@/lib/utils";
 import { canonicalLinks, ogUrlMeta } from "@/lib/resources";
 import { breadcrumbSchema, jsonLd } from "@/lib/seo";
+import { enquiryLabel, enquiryTypes } from "@/lib/forms";
+import { FormProblem, Honeypot, useFormSubmit } from "@/hooks/use-form-submit";
 import { socialProfileUrls } from "@/lib/social";
 
 const directionsUrl = "https://maps.app.goo.gl/PKSL1UK9TJZ1oJ5V9";
@@ -67,7 +70,16 @@ function ContactCard({ icon: Icon, children }: { icon: LucideIcon; children: Rea
 }
 
 function Contact() {
-  const [notSent, setNotSent] = useState(false);
+  const { interest } = Route.useSearch();
+  const { status, onSubmit, reset, sending } = useFormSubmit("contact");
+  const formRef = useRef<HTMLFormElement>(null);
+  // Links such as a course's "Get in Touch" arrive as /contact?interest=<key>; preselect that
+  // enquiry type. Done after hydration so the prerendered page and the first render match.
+  useEffect(() => {
+    const select = formRef.current?.elements.namedItem("enquiryType");
+    const label = enquiryLabel(interest);
+    if (select instanceof HTMLSelectElement && label) select.value = label;
+  }, [interest, status]);
 
   return (
     <>
@@ -169,14 +181,23 @@ function Contact() {
                   <p className="mt-2 text-slate">Tell us a little about your enquiry, and our team will have the context needed to respond.</p>
                 </div>
               </div>
-              <form
-                className="mt-8 grid gap-5 md:grid-cols-2"
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  if (!event.currentTarget.reportValidity()) return;
-                  setNotSent(true);
-                }}
-              >
+              {status === "sent" ? (
+                <div role="status" className="kh-panel mt-8 rounded-2xl border border-saffron/40 bg-card p-6 text-center md:p-8">
+                  <span aria-hidden="true" className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-saffron/15 text-saffron-ink">
+                    <Check className="h-6 w-6" strokeWidth={2.25} />
+                  </span>
+                  <h3 className="h3 mt-4">Thank you. Your enquiry has been sent.</h3>
+                  <p className="mx-auto mt-3 max-w-md text-slate">
+                    Our team will get back to you at the email address you shared. For anything urgent,
+                    call +91-9318497057.
+                  </p>
+                  <button type="button" onClick={reset} className={buttonClass("secondary", "mt-6 w-full sm:w-auto")}>
+                    Send another enquiry
+                  </button>
+                </div>
+              ) : (
+              <form ref={formRef} className="relative mt-8 grid gap-5 md:grid-cols-2" onSubmit={onSubmit}>
+                <Honeypot />
                 <Field label="Full name" name="name" required />
                 <Field label="Email" name="email" type="email" required />
                 <Field label="Organisation" name="organisation" />
@@ -185,29 +206,25 @@ function Contact() {
                   name="enquiryType"
                   as="select"
                   required
-                  options={[
-                    "General enquiry",
-                    "Partnership or collaboration",
-                    "Institutional or corporate enquiry",
-                    "Media or other enquiry",
-                  ]}
+                  options={enquiryTypes.map((type) => type.label)}
                 />
                 <div className="md:col-span-2">
                   <Field label="Message" name="message" as="textarea" required />
                 </div>
                 <div className="flex flex-col gap-4 border-t border-border/70 pt-5 md:col-span-2 md:flex-row md:items-center md:justify-between">
                   <p className="text-small text-slate">Fields marked * are required.</p>
-                  <button type="submit" className={buttonClass("primary", "w-full md:w-auto")}>
-                    Send Enquiry
+                  <button
+                    type="submit"
+                    disabled={sending}
+                    aria-busy={sending}
+                    className={buttonClass("primary", "w-full disabled:cursor-wait disabled:opacity-80 md:w-auto")}
+                  >
+                    {sending ? "Sending…" : "Send Enquiry"}
                   </button>
                 </div>
-                {notSent && (
-                  <p className="kh-panel rounded-lg border border-saffron/40 bg-saffron/10 p-4 text-small leading-6 text-navy md:col-span-2" role="alert">
-                    Your enquiry has not been sent because this form is not connected to a submission
-                    service yet. Please call +91-9318497057 to reach us.
-                  </p>
-                )}
+                <FormProblem status={status} fallback="Please call +91-9318497057 or email hello@kaushalhub.in to reach us." />
               </form>
+              )}
             </div>
           </div>
         </div>

@@ -103,7 +103,11 @@ describe("FacultySection", () => {
     expect(document.querySelector("img")).toBeNull();
   });
 
-  it("gives every program faculty profiles", () => {
-    for (const program of programs) expect(program.faculty.length).toBeGreaterThan(0);
+  it("gives every program faculty profiles except the Microsoft AI course", () => {
+    // The shared faculty list does not teach the Microsoft AI course, so its page has none.
+    for (const program of programs) {
+      if (program.slug === "generative-ai-in-action") expect(program.faculty).toHaveLength(0);
+      else expect(program.faculty.length).toBeGreaterThan(0);
+    }
   });
 });

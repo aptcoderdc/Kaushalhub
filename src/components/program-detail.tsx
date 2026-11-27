@@ -102,7 +102,7 @@ export function ProgramDetail({ program }: { program: Program }) {
                 {program.heroNotice}
               </p>
               <div className={cn("kh-rise mt-8 flex flex-col gap-3 [--kh-delay:320ms] sm:flex-row", compact && "max-sm:order-2 max-sm:mt-6")}>
-                <ButtonLink to="/contact">Get in Touch</ButtonLink>
+                <ButtonLink to="/contact" search={{ interest: program.slug }}>Get in Touch</ButtonLink>
                 <ButtonLink to="/programs" variant="secondary">Explore all programs</ButtonLink>
               </div>
             </div>
@@ -188,7 +188,7 @@ export function ProgramDetail({ program }: { program: Program }) {
               <p className="eyebrow !text-saffron">HAVE A QUESTION?</p>
               <p className="mt-4 font-serif text-[20px] leading-8 text-primary-foreground md:text-[24px] md:leading-9">{program.finalNotice}</p>
               <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
-                <ButtonLink to="/contact">Get in Touch</ButtonLink>
+                <ButtonLink to="/contact" search={{ interest: program.slug }}>Get in Touch</ButtonLink>
                 <ButtonLink to="/programs" variant="inverse">Explore all programs</ButtonLink>
               </div>
             </div>

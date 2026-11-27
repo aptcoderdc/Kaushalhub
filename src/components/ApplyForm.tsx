@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { Check } from "lucide-react";
 import { Field, buttonClass } from "@/components/site";
+import { FormProblem, Honeypot, useFormSubmit } from "@/hooks/use-form-submit";
 
 function Done({ title, text }: { title: string; text: string }) {
   return (
@@ -462,20 +464,31 @@ export const communityInterests = [
   "Other",
 ] as const;
 
-export function CommunityForm() {
-  const [submissionAttempted, setSubmissionAttempted] = useState(false);
+export function CommunityForm({ onDone }: { onDone?: () => void }) {
+  const { status, onSubmit, sending } = useFormSubmit("community");
+
+  if (status === "sent") {
+    return (
+      <div role="status" className="kh-panel rounded-2xl border border-saffron/40 bg-card p-6 text-center shadow-card md:p-8">
+        <span aria-hidden="true" className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-saffron/15 text-saffron-ink">
+          <Check className="h-6 w-6" strokeWidth={2.25} />
+        </span>
+        <h3 className="h3 mt-4">You’re in. Welcome to the community.</h3>
+        <p className="mx-auto mt-3 max-w-md text-slate">
+          Thank you for joining. Our team will be in touch about community activities that match your interests.
+        </p>
+        {onDone && (
+          <button type="button" onClick={onDone} className={buttonClass("primary", "mt-6 w-full sm:w-auto")}>
+            Done
+          </button>
+        )}
+      </div>
+    );
+  }
 
   return (
-    <form
-      className="grid gap-5 md:grid-cols-2"
-      onSubmit={(e) => {
-        e.preventDefault();
-
-        if (!e.currentTarget.reportValidity()) return;
-
-        setSubmissionAttempted(true);
-      }}
-    >
+    <form className="relative grid gap-5 md:grid-cols-2" onSubmit={onSubmit}>
+      <Honeypot />
       <Field label="Full name" name="name" required />
 
       <Field
@@ -509,25 +522,22 @@ export function CommunityForm() {
 
       <Consent label="I agree to receive community-related updates from Kaushal Hub." />
 
+      <FormProblem status={status} fallback="You can also write to hello@kaushalhub.in." />
+
       <div className="md:col-span-2">
         <button
           type="submit"
-          className={buttonClass("primary", "w-full md:w-auto")}
+          disabled={sending}
+          aria-busy={sending}
+          className={buttonClass("primary", "w-full disabled:cursor-wait disabled:opacity-80 md:w-auto")}
         >
-          Join the Community
+          {sending ? "Joining…" : "Join the Community"}
         </button>
 
         <p className="mt-4 text-small leading-6 text-slate">
-          If a submission service is connected, your details will be used for community
-          participation follow-up. Community updates will only be sent if you consent. This page
-          does not transmit or store your details yet.
+          We use these details only to follow up about the Kaushal Hub community, and send updates
+          only with your consent.
         </p>
-        {submissionAttempted && (
-          <p className="mt-4 text-small leading-6 text-slate" role="alert">
-            We could not submit your details because this form is not connected to a registration
-            service yet. Your information remains in the form and has not been sent or saved.
-          </p>
-        )}
       </div>
     </form>
   );

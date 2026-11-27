@@ -10,6 +10,7 @@ import { jsonLd, organizationSchema, websiteSchema } from "@/lib/seo";
 import { organisationLogos } from "@/lib/organisation-logos";
 import { supportingPrograms } from "@/lib/program-nav";
 import { publicAsset } from "@/lib/public-asset";
+import { useJoinCommunityClick } from "@/components/join-community";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -80,7 +81,7 @@ const homepageFaqs = [
     a: (
       <>
         Yes. If you have relevant expertise, knowledge resources, learning opportunities or a
-        collaboration idea, use the <Link to="/contact" className={faqLinkClass}>Partner with Us</Link>{" "}
+        collaboration idea, use the <Link to="/contact" search={{ interest: "partnership" }} className={faqLinkClass}>Partner with Us</Link>{" "}
         option or <Link to="/contact" className={faqLinkClass}>contact us</Link> to discuss it.
         Potential collaborations will be considered based on their relevance and feasibility.
       </>
@@ -323,6 +324,7 @@ function CommunityNetwork() {
 }
 
 function HomeCommunity() {
+  const joinCommunity = useJoinCommunityClick();
   return (
     <section id="community" className="scroll-mt-20 bg-background py-10 md:py-12">
       <div className="container-site">
@@ -332,7 +334,7 @@ function HomeCommunity() {
             <h2 className="h2 mt-4 text-balance !text-primary-foreground">Learning gets stronger when knowledge is shared.</h2>
             <p className="mt-4 max-w-2xl text-primary-foreground/75">Connect with people who are learning, building, sharing expertise and exploring new opportunities. Join the Kaushal Hub community to hear about resources, learning initiatives and ways to participate.</p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-              <ButtonLink to="/community">Join the Community</ButtonLink>
+              <ButtonLink to="/community" onClick={joinCommunity}>Join the Community</ButtonLink>
             </div>
           </div>
           <div className="lg:col-span-5">
@@ -395,7 +397,7 @@ function PartnerWithUs() {
                 <p className="mt-3 max-w-2xl text-slate">Whether you bring industry expertise, learning opportunities, practical insights or an idea for collaboration, let’s explore how we can turn it into something valuable for our community.</p>
               </div>
             </div>
-            <ButtonLink to="/contact" className="shrink-0">Partner with Us</ButtonLink>
+            <ButtonLink to="/contact" search={{ interest: "partnership" }} className="shrink-0">Partner with Us</ButtonLink>
           </div>
         </div>
       </div>

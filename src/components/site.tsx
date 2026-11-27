@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode, type ComponentProps } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode, type ComponentProps, type MouseEvent } from "react";
 import { ChevronDown, Menu, X, Check, ArrowRight, ArrowUpRight, Facebook, Instagram, Linkedin, Sparkles, Youtube } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { publicAsset } from "@/lib/public-asset";
@@ -31,9 +31,9 @@ export function buttonClass(v: Variant = "primary", extra?: string) {
 export function SiteButton({ className, variant = "primary", ...props }: ComponentProps<"button"> & { variant?: Variant }) {
   return <button {...props} className={buttonClass(variant, className)} />;
 }
-export function ButtonLink({ to, hash, search, variant = "primary", children, className }: { to: string; hash?: string; search?: Record<string, unknown>; variant?: Variant; children: ReactNode; className?: string }) {
+export function ButtonLink({ to, hash, search, variant = "primary", children, className, onClick }: { to: string; hash?: string; search?: Record<string, unknown>; variant?: Variant; children: ReactNode; className?: string; onClick?: (event: MouseEvent<HTMLAnchorElement>) => void }) {
   return (
-    <Link to={to} {...(hash ? { hash } : {})} {...(search ? { search } : {})} className={buttonClass(variant, className)}>
+    <Link to={to} {...(hash ? { hash } : {})} {...(search ? { search } : {})} {...(onClick ? { onClick } : {})} className={buttonClass(variant, className)}>
       {children}{variant === "text" && <ArrowRight className="h-4 w-4 transition-transform duration-300 ease-brand group-hover:translate-x-1 group-hover/btn:translate-x-1 motion-reduce:transition-none" />}
     </Link>
   );
@@ -404,10 +404,12 @@ export function StickyApply({
   ctaLabel = "Apply Now",
   ctaTo = "/experience-to-enterprise",
   ctaHash = "application",
+  ctaSearch,
 }: {
   ctaLabel?: string;
   ctaTo?: string;
   ctaHash?: string;
+  ctaSearch?: Record<string, string>;
 }) {
   // While the application form itself is on screen the bar would only repeat it and cover the
   // submit button, so it slides away there.
@@ -430,7 +432,7 @@ export function StickyApply({
         formInView && "translate-y-full",
       )}
     >
-      <ButtonLink to={ctaTo} hash={ctaHash} className="min-w-0 flex-1">
+      <ButtonLink to={ctaTo} hash={ctaHash} {...(ctaSearch ? { search: ctaSearch } : {})} className="min-w-0 flex-1">
         {ctaLabel}
       </ButtonLink>
       <a

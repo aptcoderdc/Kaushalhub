@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { canonicalLinks, ogUrlMeta } from "@/lib/resources";
 import { breadcrumbSchema, jsonLd } from "@/lib/seo";
 import { organisationLogos } from "@/lib/organisation-logos";
+import { useJoinCommunityClick } from "@/components/join-community";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -72,6 +73,7 @@ const pillars: { icon: LucideIcon; title: string; text: string; to: string; cta:
 ];
 
 function About() {
+  const joinCommunity = useJoinCommunityClick();
   return (
     <>
       {/* Hero */}
@@ -201,6 +203,7 @@ function About() {
             <li key={title}>
               <Link
                 to={to}
+                onClick={to === "/community" ? joinCommunity : undefined}
                 className={cn(interactiveCardSurface, "flex h-full flex-col p-6 outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2 md:p-7")}
               >
                 <span aria-hidden="true" className="grid h-12 w-12 place-items-center rounded-xl bg-tint text-navy transition-colors duration-300 group-hover:bg-saffron">

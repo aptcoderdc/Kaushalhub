@@ -18,6 +18,7 @@ import { publicAsset } from "../lib/public-asset";
 import { SITE_NAME, SOCIAL_IMAGE } from "../lib/seo";
 import { GOOGLE_SITE_VERIFICATION, gaBootstrapScript } from "../lib/analytics";
 import { WhatsAppContact } from "../components/whatsapp-contact";
+import { JoinCommunityProvider } from "../components/join-community";
 import { useScrollReveal } from "../hooks/use-scroll-reveal";
 
 function NotFoundComponent() {
@@ -153,11 +154,12 @@ function RootComponent() {
   // enquiry instead of pointing visitors to the Experience to Enterprise application.
   const stickyCta =
     pathname.replace(/\/$/, "") === "/programs/generative-ai-in-action"
-      ? { ctaLabel: "Get in Touch", ctaTo: "/contact", ctaHash: "" }
+      ? { ctaLabel: "Get in Touch", ctaTo: "/contact", ctaHash: "", ctaSearch: { interest: "generative-ai-in-action" } }
       : programCta;
 
   return (
     <QueryClientProvider client={queryClient}>
+      <JoinCommunityProvider>
       <Navbar />
       <main>
         {/* Keyed so each route's opening section plays its entrance once. */}
@@ -168,6 +170,7 @@ function RootComponent() {
       <Footer />
       <StickyApply {...stickyCta} />
       <WhatsAppContact />
+      </JoinCommunityProvider>
     </QueryClientProvider>
   );
 }

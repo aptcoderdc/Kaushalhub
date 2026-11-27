@@ -86,7 +86,7 @@ describe("homepage FAQ", () => {
     );
     expect(
       within(faq as HTMLElement).getByRole("link", { name: "Partner with Us" }),
-    ).toHaveAttribute("href", "/contact");
+    ).toHaveAttribute("href", "/contact?interest=partnership");
     expect(within(faq as HTMLElement).getByRole("link", { name: "contact us" })).toHaveAttribute(
       "href",
       "/contact",
