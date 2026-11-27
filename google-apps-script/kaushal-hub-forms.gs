@@ -272,9 +272,8 @@ function frame(inner) {
  */
 function sendViaZoho(settings, mail) {
   const dc = String(settings["Zoho data centre"] || "in").trim();
-  const props = PropertiesService.getScriptProperties();
-  const accountId = props.getProperty("ZOHO_ACCOUNT_ID") || zohoAccountId(dc);
-  const fromAddress = props.getProperty("ZOHO_FROM_ADDRESS");
+  const accountId = prop("ZOHO_ACCOUNT_ID") || zohoAccountId(dc);
+  const fromAddress = prop("ZOHO_FROM_ADDRESS");
   // Zoho shows the mailbox's own display name; replies go to the mailbox, and team emails list
   // the person's address in the body.
   const body = {
@@ -299,19 +298,18 @@ function zohoAccessToken(dc) {
   const cache = CacheService.getScriptCache();
   const cached = cache.get("zoho_access_token");
   if (cached) return cached;
-  const props = PropertiesService.getScriptProperties();
   const response = UrlFetchApp.fetch(`https://accounts.zoho.${dc}/oauth/v2/token`, {
     method: "post",
     payload: {
-      refresh_token: props.getProperty("ZOHO_REFRESH_TOKEN"),
-      client_id: props.getProperty("ZOHO_CLIENT_ID"),
-      client_secret: props.getProperty("ZOHO_CLIENT_SECRET"),
+      refresh_token: prop("ZOHO_REFRESH_TOKEN"),
+      client_id: prop("ZOHO_CLIENT_ID"),
+      client_secret: prop("ZOHO_CLIENT_SECRET"),
       grant_type: "refresh_token",
     },
     muteHttpExceptions: true,
   });
   const data = JSON.parse(response.getContentText());
-  if (!data.access_token) throw new Error(`Zoho token error: ${response.getContentText()}`);
+  if (!data.access_token) throw new Error(`Zoho token error: ${response.getContentText()}${zohoHint(response.getContentText(), dc)}`);
   cache.put("zoho_access_token", data.access_token, 50 * 60);
   return data.access_token;
 }
@@ -337,18 +335,21 @@ function zohoAccountId(dc) {
 function zohoConnect() {
   const props = PropertiesService.getScriptProperties();
   const dc = String(readSettings()["Zoho data centre"] || "in").trim();
+  ["ZOHO_CLIENT_ID", "ZOHO_CLIENT_SECRET", "ZOHO_GRANT_CODE"].forEach((name) => {
+    if (!prop(name)) throw new Error(`Script Property ${name} is missing (Project Settings → Script Properties).`);
+  });
   const response = UrlFetchApp.fetch(`https://accounts.zoho.${dc}/oauth/v2/token`, {
     method: "post",
     payload: {
-      code: props.getProperty("ZOHO_GRANT_CODE"),
-      client_id: props.getProperty("ZOHO_CLIENT_ID"),
-      client_secret: props.getProperty("ZOHO_CLIENT_SECRET"),
+      code: prop("ZOHO_GRANT_CODE"),
+      client_id: prop("ZOHO_CLIENT_ID"),
+      client_secret: prop("ZOHO_CLIENT_SECRET"),
       grant_type: "authorization_code",
     },
     muteHttpExceptions: true,
   });
   const data = JSON.parse(response.getContentText());
-  if (!data.refresh_token) throw new Error(`Zoho did not return a refresh token: ${response.getContentText()}`);
+  if (!data.refresh_token) throw new Error(`Zoho did not return a refresh token: ${response.getContentText()}${zohoHint(response.getContentText(), dc)}`);
   props.setProperty("ZOHO_REFRESH_TOKEN", data.refresh_token);
   props.deleteProperty("ZOHO_GRANT_CODE");
   CacheService.getScriptCache().put("zoho_access_token", data.access_token, 50 * 60);
@@ -367,6 +368,20 @@ function sendTestEmails() {
 }
 
 /* ------------------------------------------------------------------ helpers */
+
+/** A Script Property with stray spaces or line breaks (common when pasting) removed. */
+function prop(name) {
+  return String(PropertiesService.getScriptProperties().getProperty(name) || "").trim();
+}
+
+/** Turns Zoho's terse OAuth errors into a next step. */
+function zohoHint(text, dc) {
+  if (/invalid_client/.test(text))
+    return ` → Zoho does not recognise ZOHO_CLIENT_ID / ZOHO_CLIENT_SECRET at accounts.zoho.${dc}. Check both were copied in full from https://api-console.zoho.${dc} (the console must be on the same .${dc} domain as the "Zoho data centre" setting), then create a new code.`;
+  if (/invalid_code/.test(text))
+    return " → The code has expired or was already used. Generate a new one (Generate Code tab), paste it into ZOHO_GRANT_CODE and run zohoConnect within 10 minutes.";
+  return "";
+}
 
 /** The form's tab, created with a bold, frozen header row if it doesn't exist yet. */
 function sheetFor(kind) {
